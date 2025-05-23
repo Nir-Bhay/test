@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sinha Library</title>
+    <link rel="shortcut icon" href="/Main/image/facicon/favicon.ico" type="image/x-icon">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            margin: 20px;
+            padding: 0;
+        }
+
+        .form-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: auto;
+        }
+
+        h2,
+        h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .upper-section {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .upper-section div {
+            flex: 1;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            margin: 10px;
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .user-input-section {
+            background-color: #fafafa;
+        }
+
+        .library-info-section {
+            background-color: #f2f2f2;
+        }
+
+        .library-info-section p {
+            margin: 5px 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        input[type="date"],
+        input[type="number"],
+        input[type="text"] {
+            text-align: center;
+        }
+
+        .invoice-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .invoice-table th,
+        .invoice-table td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+            background-color: #fafafa;
+        }
+
+        .invoice-summary {
+            text-align: right;
+            padding-right: 20px;
+        }
+
+        .invoice-summary strong {
+            display: block;
+            margin: 5px 0;
+            color: #333;
+        }
+
+        .invoice-summary input {
+            width: 100px;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 5px;
+            margin-left: 10px;
+            box-sizing: border-box;
+        }
+
+        #download {
+            display: block;
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px;
+            text-align: center;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 30%;
+            font-size: 16px;
+        }
+
+        #download:hover {
+            background-color: #45a049;
+        }
+
+        textarea {
+            height: 100px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .upper-section {
+                flex-direction: column;
+            }
+
+            .upper-section div {
+                margin: 10px 0;
+            }
+
+            .invoice-summary {
+                padding-right: 0;
+                text-align: left;
+            }
+
+            .invoice-summary strong {
+                margin: 5px 0;
+                font-size: 12px;
+            }
+
+            .invoice-summary input {
+                width: 30%;
+                margin-left: 0;
+                margin-top: 3px;
+
+            }
+        }
+
+        @media (max-width: 480px) {
+            .form-container {
+                padding: 10px;
+            }
+
+            h2,
+            h3 {
+                font-size: 18px;
+            }
+
+            #download {
+                font-size: 14px;
+                width: 70%;
+            }
+        }
+
+        .image {
+            width: 100%;
+            height: 10%;
+            border-bottom: 1px solid black;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .image img {
+            width: 10%;
+            height: 100%;
+        }
+        .user-input-section input{
+            width: 80%;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="form-container" id="form-content">
+        <!-- Part 1: Upper Section -->
+        <div class="image">
+            <img src="..//image/Logo/Sinha library.jpg" alt="">
+            <H1>SINHA LIBRARY</H1>
+            <h4>Best Place for study</h4>
+        </div>
+        <div class="upper-section">
+            <!-- Sub-Box 1: User Input Section -->
+            <div class="user-input-section">
+                <h3>Student Details</h3>
+
+                <label for="memberid">Member ID:</label>
+                <input type="text" id="memberid" name="memberid">
+
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name">
+
+                <label for="slot">Select Slot:</label>
+                <select id="slot" name="slot">
+                    <option value="Select slot">Select Your Slot:</option>
+                    <option value="Full Time [6am to 10pm]">Full Time [6am to 10pm]</option>
+                    <option value="Morning [6am to 2pm]"> Morning [6am to 2pm]</option>
+                    <option value="Evening[2pm to 10pm]">Evening [2pm to 10pm]</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <!-- Sub-Box 2: Constant Values -->
+            <div class="library-info-section">
+                <h3>Library Information</h3>
+                <p><strong>Sinha Library</strong></p>
+                <p>Address:surya vihar colony
+                    Dhanbad jharkhand</p>
+                <p>Email: sinhalibrary9700@gmail.com</p>
+                <p>Phone: 7319692439</p>
+                <p>Website:<a href="">https://sinhalibrarydhanbad.vercel.app/</a></p>
+            </div>
+        </div>
+
+        <!-- Part 2: Middle Section -->
+        <div>
+            <h2>Invoice Details</h2>
+            <table class="invoice-table">
+                <tr>
+                    <th>Invoice Date</th>
+                    <th>Start Date</th>
+                    <th>Expiry Date</th>
+                    <th>Amount</th>
+                </tr>
+                <tr>
+                    <td><input type="date" id="invoiceDate" name="invoiceDate"></td>
+                    <td><input type="date" id="startDate" name="startDate"></td>
+                    <td><input type="date" id="expiryDate" name="expiryDate"></td>
+                    <td><input type="number" id="amount" name="amount" placeholder="Enter Amount"></td>
+                </tr>
+            </table>
+            <div class="invoice-summary">
+                <strong>Enrollment Fee: <input type="number" id="enrollmentFee" name="enrollmentFee"
+                        placeholder="Enter Fee"></strong>
+                <strong>Discount &nbsp: &nbsp &nbsp &nbsp &nbsp<input type="number" id="discount" name="discount"
+                        placeholder="Enter Discount"></strong>
+                <strong>Final Amount: <input type="number" id="finalAmount" name="finalAmount"
+                        placeholder="Final Amount"></strong>
+                <strong>Paid Amount: <input type="number" id="paidAmount" name="paidAmount"
+                        placeholder="Paid Amount"></strong>
+                <strong>Due Amount: <input type="number" id="dueAmount" name="dueAmount"
+                        placeholder="Due Amount"></strong>
+            </div>
+        </div>
+
+        <!-- Part 3: Lower Section -->
+        <div>
+            <h4>Terms and Conditions</h4>
+            <p>
+                1. Fee Once deposited will not be REFUNDED.<br>
+                2. If you are absent, it will be your responsibility.<br>
+                3. You can leave your books and copy on your desk only if you are in full timing slot.<br>
+                4. If you choose full-time and are absent for more than 7 days without informing, your seat will not be
+                reserved.<br>
+                5. If you do not maintain the attendance register on daily basis, you will be considered absent and your
+                seat will be removed.
+            </p>
+
+        </div>
+
+        <!-- Download Button -->
+        <button id="download">Bill Of SINHA LIBRARY</button>
+    </div>
+
+    <!-- Script to generate PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+    <script>
+        document.getElementById('download').addEventListener('click', function () {
+            var element = document.getElementById('form-content');
+            html2pdf().from(element).save('Your bill.pdf');
+        });
+    </script>
+</body>
+
+</html>

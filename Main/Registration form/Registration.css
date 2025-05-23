@@ -1,0 +1,114 @@
+/* Registration.css */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.form-container {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.logo {
+    max-width: 100px;
+    height: auto;
+    margin-right: 20px;
+}
+
+.title-section h1 {
+    margin: 0;
+    font-size: 24px;
+}
+
+.title-section h2, .title-section h3 {
+    margin: 5px 0;
+    font-size: 18px;
+}
+
+.form-row {
+    margin-bottom: 15px;
+}
+
+.form-group {
+    margin-bottom: 10px;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+}
+
+input[type="text"], input[type="date"], select {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+input[type="file"] {
+    margin-top: 5px;
+}
+
+.checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.checkbox-group label {
+    display: flex;
+    align-items: center;
+}
+
+.radio-group {
+    display: flex;
+    gap: 10px;
+}
+
+.terms-and-conditions {
+    margin: 20px 0;
+}
+
+.terms-and-conditions h4 {
+    margin: 0 0 10px;
+    font-size: 18px;
+}
+
+.terms-and-conditions p {
+    margin: 0;
+    line-height: 1.6;
+}
+
+button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+img#studentImagePreview {
+    display: block;
+    margin-top: 10px;
+    max-width: 100px;
+    height: auto;
+}

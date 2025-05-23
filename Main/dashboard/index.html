@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Sinha Library</title>
+    <link rel="shortcut icon" href="../image/facicon/favicon.ico" type="image/x-icon">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #8B4513;
+            --primary-dark: #6B3E0B;
+            --secondary-color: #A0522D;
+            --text-color: #333;
+            --light-color: #fff;
+            --light-gray: #f8f9fa;
+            --border-color: #dee2e6;
+            --accent-color: #D2B48C;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --info-color: #17a2b8;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f5f5;
+            color: var(--text-color);
+            overflow-x: hidden;
+        }
+        
+        .sidebar {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: var(--light-color);
+            height: 100vh;
+            position: fixed;
+            padding-top: 20px;
+            transition: all 0.3s;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+        
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 12px 20px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        
+        .sidebar .nav-link:hover, 
+        .sidebar .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.15);
+            color: var(--light-color);
+            transform: translateX(5px);
+        }
+        
+        .sidebar .nav-link i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+        
+        .main-content {
+            margin-left: 250px;
+            padding: 25px;
+            transition: all 0.3s;
+            min-height: 100vh;
+            background-color: #f5f5f5;
+        }
+        
+        .navbar {
+            background-color: var(--light-color);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
+        
+        .navbar-brand img {
+            height: 40px;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: var(--light-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: var(--light-color);
+            border-radius: 15px 15px 0 0 !important;
+            padding: 15px 20px;
+            font-weight: 600;
+            border: none;
+        }
+        
+        .stat-card {
+            border-left: 5px solid var(--primary-color);
+            border-radius: 15px;
+            background: linear-gradient(to right, rgba(255,255,255,0.9), rgba(255,255,255,1));
+        }
+        
+        .stat-card i {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .stat-card .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+        
+        .stat-card .stat-text {
+            color: #6c757d;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 80px;
+                box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            }
+            
+            .sidebar .nav-link span {
+                display: none;
+            }
+            
+            .sidebar .nav-link i {
+                margin-right: 0;
+                font-size: 1.3rem;
+            }
+            
+            .main-content {
+                margin-left: 80px;
+                padding: 15px;
+            }
+            
+            .stat-card .stat-number {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar d-flex flex-column flex-shrink-0 p-3 text-white" style="width: 250px;">
+        <a href="../index.html" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+            <img src="../image/Logo/Sinha_library new.png" alt="Sinha Library" class="me-2" style="height: 40px;">
+            <span class="fs-4">Sinha Library</span>
+        </a>
+        <hr>
+        <ul class="nav nav-pills flex-column mb-auto">
+            <li class="nav-item">
+                <a href="#" class="nav-link active" aria-current="page">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="nav-link text-white">
+                    <i class="fas fa-book"></i>
+                    <span>Books</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="nav-link text-white">
+                    <i class="fas fa-bookmark"></i>
+                    <span>Reservations</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="nav-link text-white">
+                    <i class="fas fa-history"></i>
+                    <span>History</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="nav-link text-white">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </li>
+        </ul>
+        <hr>
+        <div class="dropdown">
+            <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                <div class="user-avatar" id="userInitials">U</div>
+                <span id="userName">User</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
+                <li><a class="dropdown-item" href="#">Profile</a></li>
+                <li><a class="dropdown-item" href="#">Settings</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="#" id="logoutBtn">Sign out</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container-fluid">
+            <!-- Top Navbar -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4 rounded">
+                <div class="container-fluid">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <form class="d-flex ms-auto me-3">
+                            <div class="input-group">
+                                <input class="form-control" type="search" placeholder="Search" aria-label="Search">
+                                <button class="btn btn-outline-primary" type="submit"><i class="fas fa-search"></i></button>
+                            </div>
+                        </form>
+                        <ul class="navbar-nav mb-2 mb-lg-0">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-bell"></i>
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                        3
+                                    </span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                    <li><a class="dropdown-item" href="#">Book due tomorrow</a></li>
+                                    <li><a class="dropdown-item" href="#">New arrivals</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="#">See all notifications</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Welcome Message -->
+            <div class="card mb-4 welcome-card">
+                <div class="card-body p-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h2 class="card-title fw-bold mb-2">Welcome, <span id="welcomeUserName">User</span>! 👋</h2>
+                            <p class="card-text text-muted">This is your Sinha Library dashboard where you can manage your books, reservations, and account.</p>
+                        </div>
+                        <div class="col-md-4 text-md-end">
+                            <img src="../image/Logo/Sinha_library new.png" alt="Sinha Library" class="img-fluid" style="max-height: 80px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Row -->
+            <div class="row mb-4">
+                <div class="col-md-3 col-sm-6 mb-3 mb-md-0">
+                    <div class="card stat-card h-100">
+                        <div class="card-body d-flex align-items-center p-4">
+                            <div class="me-3">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <div>
+                                <div class="stat-number">0</div>
+                                <div class="stat-text">Books Borrowed</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-3 mb-md-0">
+                    <div class="card stat-card h-100">
+                        <div class="card-body d-flex align-items-center p-4">
+                            <div class="me-3">
+                                <i class="fas fa-bookmark"></i>
+                            </div>
+                            <div>
+                                <div class="stat-number">0</div>
+                                <div class="stat-text">Books Reserved</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-3 mb-md-0">
+                    <div class="card stat-card h-100">
+                        <div class="card-body d-flex align-items-center p-4">
+                            <div class="me-3">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div>
+                                <div class="stat-number" id="daysRemaining">0</div>
+                                <div class="stat-text">Days Remaining</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="card stat-card h-100">
+                        <div class="card-body d-flex align-items-center p-4">
+                            <div class="me-3">
+                                <i class="fas fa-rupee-sign"></i>
+                            </div>
+                            <div>
+                                <div class="stat-number" id="finesDue">0</div>
+                                <div class="stat-text">Fines Due</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Button Card -->
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-credit-card me-2"></i>Payment Options</h5>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <p class="mb-md-0">Click the button below to make a payment for membership or fines.</p>
+                        </div>
+                        <div class="col-md-4 text-md-end">
+                            <button class="btn btn-primary btn-lg shadow-sm" id="newPaymentBtn">
+                                <i class="fas fa-rupee-sign me-2"></i>Make Payment
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment History Card -->
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-history me-2"></i>Payment History</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="px-4 py-3">Date</th>
+                                    <th class="px-4 py-3">Amount</th>
+                                    <th class="px-4 py-3">Note</th>
+                                </tr>
+                            </thead>
+                            <tbody id="paymentHistoryTableBody">
+                                <tr>
+                                    <td colspan="3" class="text-center py-4">No payment history available</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment Modal -->
+        <div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 shadow">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title" id="paymentModalLabel"><i class="fas fa-money-bill-wave me-2"></i>Payment Options</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body p-4">
+                        <!-- Payment Tabs -->
+                        <ul class="nav nav-tabs nav-fill mb-4" id="paymentTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="qr-tab" data-bs-toggle="tab" data-bs-target="#qr-content" type="button" role="tab" aria-controls="qr-content" aria-selected="true">
+                                    <i class="fas fa-qrcode me-2"></i>QR Code
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="upi-tab" data-bs-toggle="tab" data-bs-target="#upi-content" type="button" role="tab" aria-controls="upi-content" aria-selected="false">
+                                    <i class="fas fa-mobile-alt me-2"></i>UPI ID
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="bank-tab" data-bs-toggle="tab" data-bs-target="#bank-content" type="button" role="tab" aria-controls="bank-content" aria-selected="false">
+                                    <i class="fas fa-university me-2"></i>Bank Details
+                                </button>
+                            </li>
+                        </ul>
+                        
+                        <!-- Tab Content -->
+                        <div class="tab-content" id="paymentTabContent">
+                            <!-- QR Code Tab -->
+                            <div class="tab-pane fade show active text-center p-3" id="qr-content" role="tabpanel" aria-labelledby="qr-tab">
+                                <div id="qrcode" class="d-inline-block p-3 bg-white rounded shadow-sm mb-3"></div>
+                                <p class="mb-0 fw-bold">Scan this QR code to pay ₹500</p>
+                                <p class="text-muted small">Use any UPI app like Google Pay, PhonePe, or Paytm</p>
+                            </div>
+                            
+                            <!-- UPI Tab -->
+                            <div class="tab-pane fade p-3" id="upi-content" role="tabpanel" aria-labelledby="upi-tab">
+                                <div class="alert alert-info border-0 shadow-sm">
+                                    <h5 class="alert-heading"><i class="fas fa-info-circle me-2"></i>UPI Payment</h5>
+                                    <hr>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="bg-white p-2 rounded me-3 shadow-sm">
+                                            <i class="fas fa-at fa-2x text-primary"></i>
+                                        </div>
+                                        <div>
+                                            <p class="mb-0"><strong>UPI ID:</strong></p>
+                                            <p class="mb-0 font-monospace">sinhalibrary@upi</p>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-white p-2 rounded me-3 shadow-sm">
+                                            <i class="fas fa-phone fa-2x text-primary"></i>
+                                        </div>
+                                        <div>
+                                            <p class="mb-0"><strong>Phone Number:</strong></p>
+                                            <p class="mb-0 font-monospace">9876543210</p>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <p class="mb-0 small">Please mention your name and email in the payment description.</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Bank Details Tab -->
+                            <div class="tab-pane fade p-3" id="bank-content" role="tabpanel" aria-labelledby="bank-tab">
+                                <div class="alert alert-info border-0 shadow-sm">
+                                    <h5 class="alert-heading"><i class="fas fa-university me-2"></i>Bank Transfer</h5>
+                                    <hr>
+                                    <div class="row mb-2">
+                                        <div class="col-5 fw-bold">Account Name:</div>
+                                        <div class="col-7 font-monospace">Sinha Library</div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-5 fw-bold">Account Number:</div>
+                                        <div class="col-7 font-monospace">1234567890</div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-5 fw-bold">IFSC Code:</div>
+                                        <div class="col-7 font-monospace">SBIN0001234</div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-5 fw-bold">Bank:</div>
+                                        <div class="col-7">State Bank of India</div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-5 fw-bold">Branch:</div>
+                                        <div class="col-7">Main Branch</div>
+                                    </div>
+                                    <hr>
+                                    <p class="mb-0 small">Please mention your name and email in the payment description.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="confirmPayment">
+                            <i class="fas fa-check-circle me-2"></i>Confirm Payment
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bootstrap & jQuery JS -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Anti-Inspect Script -->
+        <script src="../anti-inspect.js"></script>
+        <!-- QR Code Library -->
+        <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+        <!-- Data JS with API URL function -->
+        <script src="../data.js"></script>
+        
+        <script>
+            // API URL - dynamically set based on environment
+            const API_URL = getApiUrl();
+            
+            // Check if user is logged in
+            document.addEventListener('DOMContentLoaded', function() {
+                const token = localStorage.getItem('token');
+                const userId = localStorage.getItem('userId');
+                const userEmail = localStorage.getItem('userEmail');
+                const userName = localStorage.getItem('userName') || 'User';
+                
+                // If no token or userId, redirect to login page
+                if (!token || !userId) {
+                    window.location.href = '../Login Author/login.html';
+                    return;
+                }
+                
+                // Update UI with user info
+                document.getElementById('userName').textContent = userName;
+                document.getElementById('welcomeUserName').textContent = userName;
+                
+                // Set user initials for avatar
+                if (userName && userName !== 'User') {
+                    const nameParts = userName.split(' ');
+                    let initials = '';
+                    if (nameParts.length >= 2) {
+                        initials = nameParts[0].charAt(0) + nameParts[1].charAt(0);
+                    } else {
+                        initials = nameParts[0].charAt(0);
+                    }
+                    document.getElementById('userInitials').textContent = initials.toUpperCase();
+                }
+                
+                // Load user data including membership status
+                loadUserData();
+                
+                // Handle logout
+                document.getElementById('logoutBtn').addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Clear local storage
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('userId');
+                    localStorage.removeItem('userEmail');
+                    localStorage.removeItem('userName');
+                    
+                    // Redirect to login page
+                    window.location.href = '../Login Author/login.html';
+                });
+                
+                // Payment Button
+                const newPaymentBtn = document.getElementById('newPaymentBtn');
+                
+                newPaymentBtn.addEventListener('click', function() {
+                    // Show payment modal
+                    const paymentModal = new bootstrap.Modal(document.getElementById('paymentModal'));
+                    
+                    // Generate QR code for payment
+                    const qrCodeContainer = document.getElementById('qrcode');
+                    qrCodeContainer.innerHTML = ''; // Clear previous QR code
+                    
+                    // Payment information
+                    const paymentInfo = {
+                        name: 'Sinha Library Membership',
+                        amount: '₹500.00',
+                        accountName: 'Sinha Library',
+                        upiId: 'sinhalibrary@upi'
+                    };
+                    
+                    // Generate QR code with payment information
+                    QRCode.toCanvas(qrCodeContainer, JSON.stringify(paymentInfo), {
+                        width: 200,
+                        margin: 2,
+                        color: {
+                            dark: '#8B4513',
+                            light: '#ffffff'
+                        }
+                    }, function(error) {
+                        if (error) console.error(error);
+                    });
+                    
+                    paymentModal.show();
+                });
+                
+                // Handle payment confirmation
+                document.getElementById('confirmPayment').addEventListener('click', function() {
+                    // Record payment in database
+                    fetch(`${API_URL}/record-payment`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'x-auth-token': token
+                        },
+                        body: JSON.stringify({
+                            amount: 50000, // ₹500 in paise
+                            paymentMethod: 'UPI/QR Code'
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Payment successful
+                            updateMembership();
+                            // Hide modal
+                            const paymentModal = bootstrap.Modal.getInstance(document.getElementById('paymentModal'));
+                            paymentModal.hide();
+                            // Show success message
+                            alert('Payment successful! Your membership has been activated.');
+                        } else {
+                            alert('Payment recording failed. Please try again.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Payment error:', error);
+                        alert('Failed to record payment');
+                    });
+                });
+
+                // Update membership status
+                function updateMembership() {
+                    fetch(`${API_URL}/update-membership`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'x-auth-token': token
+                        },
+                        body: JSON.stringify({
+                            userId: userId
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Membership updated
+                            startMembershipTimer();
+                        } else {
+                            alert('Failed to update membership');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Membership update error:', error);
+                        alert('Failed to update membership');
+                    });
+                }
+
+                // Start membership timer
+                function startMembershipTimer() {
+                    let daysRemaining = 30;
+                    
+                    const timer = setInterval(() => {
+                        daysRemaining--;
+                        document.getElementById('daysRemaining').textContent = daysRemaining;
+                        
+                        if (daysRemaining <= 0) {
+                            clearInterval(timer);
+                            alert('Your membership has expired. Please renew.');
+                        }
+                    }, 24 * 60 * 60 * 1000); // 24 hours
+                }
+            });
+            
+            // Load user data including membership status and payment history
+            function loadUserData() {
+                const token = localStorage.getItem('token');
+                
+                fetch(`${API_URL}/user`, {
+                    headers: {
+                        'x-auth-token': token
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to load user data');
+                    }
+                    return response.json();
+                })
+                .then(userData => {
+                    // Update days remaining
+                    const endDate = new Date(userData.membershipEndDate);
+                    const today = new Date();
+                    const daysRemaining = Math.max(0, Math.ceil((endDate - today) / (1000 * 60 * 60 * 24)));
+                    document.getElementById('daysRemaining').textContent = daysRemaining;
+                    
+                    // Update payment history if available
+                    if (userData.paymentHistory && userData.paymentHistory.length > 0) {
+                        updatePaymentHistory(userData.paymentHistory);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading user data:', error);
+                });
+            }
+            
+            // Update payment history table
+            function updatePaymentHistory(paymentHistory) {
+                const tableBody = document.getElementById('paymentHistoryTableBody');
+                tableBody.innerHTML = '';
+                
+                // Sort payments by date (newest first)
+                paymentHistory.sort((a, b) => new Date(b.date) - new Date(a.date));
+                
+                paymentHistory.forEach(payment => {
+                    const row = document.createElement('tr');
+                    
+                    // Format date
+                    const paymentDate = new Date(payment.date);
+                    const formattedDate = paymentDate.toLocaleDateString('en-IN', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric'
+                    });
+                    
+                    row.innerHTML = `
+                        <td>${formattedDate}</td>
+                        <td>₹${payment.amount}</td>
+                        <td>${payment.note || '-'}</td>
+                    `;
+                    
+                    tableBody.appendChild(row);
+                });
+            }
+        </script>
+    </body>
+</html>

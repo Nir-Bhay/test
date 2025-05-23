@@ -1,0 +1,82 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        background-color: #8B4513;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        opacity: 1;
+    }
+
+    .nav-links.active {
+        display: flex;
+    }
+
+    .nav-links li {
+        margin: 10px 0;
+        text-align: center;
+    }
+
+    .menu-toggle {
+        display: flex;
+    }
+}
+
+@media (max-width: 991px) {
+    /* Mobile Navbar Fixes */
+    .navbar {
+        background-color: var(--primary-color) !important;
+        padding: 0.5rem 1rem;
+    }
+    
+    .navbar-collapse {
+        background-color: var(--primary-color);
+        padding: 1rem;
+        border-radius: 0 0 var(--border-radius) var(--border-radius);
+        margin-top: 0.5rem;
+    }
+    
+    .navbar-nav {
+        text-align: center;
+    }
+    
+    .navbar-nav .nav-item {
+        margin: 0.5rem 0;
+    }
+    
+    .navbar-nav .nav-item .nav-link {
+        display: inline-block;
+        padding: 0.5rem 1.5rem;
+        border-radius: 5px;
+    }
+    
+    .navbar-nav .nav-item .nav-link:hover,
+    .navbar-nav .nav-item .nav-link:focus,
+    .navbar-nav .nav-item .nav-link.active {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .navbar-nav .nav-item .btn {
+        display: inline-block;
+        width: auto;
+        margin-top: 0.5rem;
+    }
+    
+    /* Ensure the toggler is visible and properly styled */
+    .navbar-toggler {
+        border: 2px solid rgba(255, 255, 255, 0.5);
+        padding: 0.25rem 0.5rem;
+    }
+    
+    .navbar-toggler:focus {
+        box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.25);
+    }
+}

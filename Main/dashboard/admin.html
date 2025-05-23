@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Sinha Library</title>
+    <link rel="shortcut icon" href="../image/facicon/favicon.ico" type="image/x-icon">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
+    <style>
+        :root {
+            --primary-color: #8B4513;
+            --primary-dark: #6B3E0B;
+            --secondary-color: #A0522D;
+            --text-color: #333;
+            --light-color: #fff;
+            --light-gray: #f8f9fa;
+            --border-color: #dee2e6;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light-gray);
+            color: var(--text-color);
+        }
+        
+        .sidebar {
+            background-color: var(--primary-color);
+            color: var(--light-color);
+            height: 100vh;
+            position: fixed;
+            padding-top: 20px;
+            transition: all 0.3s;
+        }
+        
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 10px 20px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+        
+        .sidebar .nav-link:hover, 
+        .sidebar .nav-link.active {
+            background-color: var(--secondary-color);
+            color: var(--light-color);
+        }
+        
+        .sidebar .nav-link i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+            transition: all 0.3s;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: var(--light-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+            margin-bottom: 20px;
+        }
+        
+        .table thead th {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 80px !important;
+                padding-top: 15px;
+            }
+            
+            .sidebar .d-flex span, .sidebar hr, .sidebar .dropdown {
+                display: none !important;
+            }
+            
+            .sidebar .nav-link span {
+                display: none;
+            }
+            
+            .sidebar .nav-link i {
+                margin-right: 0;
+                font-size: 1.2rem;
+            }
+            
+            .main-content {
+                margin-left: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar d-flex flex-column flex-shrink-0 p-3 text-white" style="width: 250px;">
+        <a href="../index.html" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+            <img src="../image/Logo/Sinha_library new.png" alt="Sinha Library" class="me-2" style="height: 40px;">
+            <span class="fs-4">Admin Panel</span>
+        </a>
+        <hr>
+        <ul class="nav nav-pills flex-column mb-auto">
+            <li class="nav-item">
+                <a href="#" class="nav-link active" id="showAllStudents">
+                    <i class="fas fa-users"></i>
+                    <span>All Students</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="nav-link text-white" id="showExpenseManager">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <span>Expense Manager</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="nav-link text-white" id="showAboutSection">
+                    <i class="fas fa-info-circle"></i>
+                    <span>About</span>
+                </a>
+            </li>
+        </ul>
+        <hr>
+        <div class="dropdown">
+            <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                <div class="user-avatar" id="adminInitial">A</div>
+                <span id="adminName">Admin</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
+                <li><a class="dropdown-item" href="#" id="logoutBtn">Sign out</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container-fluid">
+            <div class="row mb-4" id="studentsSection">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">All Students</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped" id="studentsTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Mobile Number</th>
+                                            <th>Email</th>
+                                            <th>Days Remaining</th>
+                                            <th>Payment Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="studentsTableBody">
+                                        <!-- Student data will be loaded here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Expense Manager Section -->
+            <div class="row mb-4" id="expenseManagerSection" style="display: none;">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Library Expense Manager</h5>
+                            <button class="btn btn-primary btn-sm" id="addExpenseBtn">
+                                <i class="fas fa-plus"></i> Add New Expense
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <!-- Summary Cards -->
+                            <div class="row mb-4">
+                                <div class="col-md-4">
+                                    <div class="card bg-primary text-white">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Total Income</h5>
+                                            <h3 class="mb-0" id="totalIncome">₹0</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card bg-danger text-white">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Total Expenses</h5>
+                                            <h3 class="mb-0" id="totalExpenses">₹0</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card bg-success text-white">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Net Balance</h5>
+                                            <h3 class="mb-0" id="netBalance">₹0</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Expense Table -->
+                            <div class="table-responsive">
+                                <table class="table table-striped" id="expenseTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Category</th>
+                                            <th>Description</th>
+                                            <th>Amount</th>
+                                            <th>Type</th>
+                                            <th>Added By</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="expenseTableBody">
+                                        <!-- Expense data will be loaded here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- About Section -->
+            <div class="row mb-4" id="aboutSection" style="display: none;">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">About Sinha Library</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h4>Our Mission</h4>
+                                    <p>Sinha Library is dedicated to fostering a love for reading and learning in our community. We provide a wide range of books and resources to support education, research, and personal growth for readers of all ages.</p>
+                                    
+                                    <h4>Our Vision</h4>
+                                    <p>To be the premier destination for knowledge seekers, offering a diverse collection of books and digital resources that inspire curiosity, creativity, and lifelong learning.</p>
+                                    
+                                    <h4>Contact Information</h4>
+                                    <ul class="list-unstyled">
+                                        <li><i class="fas fa-map-marker-alt me-2"></i> 123 Library Street, Booktown, BT 12345</li>
+                                        <li><i class="fas fa-phone me-2"></i> +91 9876543210</li>
+                                        <li><i class="fas fa-envelope me-2"></i> contact@sinhalibrary.com</li>
+                                        <li><i class="fas fa-globe me-2"></i> www.sinhalibrary.com</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <h4>Library Hours</h4>
+                                    <table class="table table-bordered">
+                                        <tbody>
+                                            <tr>
+                                                <td>Monday - Friday</td>
+                                                <td>9:00 AM - 8:00 PM</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Saturday</td>
+                                                <td>10:00 AM - 6:00 PM</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Sunday</td>
+                                                <td>12:00 PM - 5:00 PM</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    
+                                    <h4>Our Team</h4>
+                                    <p>Our dedicated team of librarians and staff members are committed to providing exceptional service and creating a welcoming environment for all visitors.</p>
+                                    
+                                    <h4>Membership Benefits</h4>
+                                    <ul>
+                                        <li>Access to our extensive collection of books and digital resources</li>
+                                        <li>Personalized reading recommendations</li>
+                                        <li>Participation in library events and workshops</li>
+                                        <li>Quiet study spaces and research assistance</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap & jQuery JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="../anti-inspect.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+    <!-- Data JS with API URL function -->
+    <script src="../data.js"></script>
+    <script>
+        // API URL - dynamically set based on environment
+        const API_URL = getApiUrl();
+        
+        // Check if user is logged in and is admin
+        document.addEventListener('DOMContentLoaded', function() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = '../Login Author/login.html';
+                return;
+            }
+            
+            // Verify admin status
+            fetch(`${API_URL}/api/user`, {
+                headers: {
+                    'x-auth-token': token
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Authentication failed');
+                }
+                return response.json();
+            })
+            .then(userData => {
+                if (!userData.isAdmin) {
+                    alert('Access denied. Admin privileges required.');
+                    window.location.href = '../Login Author/login.html';
+                    return;
+                }
+                
+                // Set admin name if available
+                if (userData.firstName && userData.lastName) {
+                    document.getElementById('adminName').textContent = `${userData.firstName} ${userData.lastName}`;
+                    document.getElementById('adminInitial').textContent = userData.firstName.charAt(0);
+                } else if (userData.email) {
+                    document.getElementById('adminName').textContent = userData.email;
+                    document.getElementById('adminInitial').textContent = userData.email.charAt(0);
+                }
+                
+                // Load initial data
+                loadStudents();
+            })
+            .catch(error => {
+                console.error('Auth error:', error);
+                alert('Authentication error. Please log in again.');
+                localStorage.removeItem('token');
+                window.location.href = '../Login Author/login.html';
+            });
+        });
+        
+        // Load all students
+        function loadStudents() {
+            const token = localStorage.getItem('token');
+            
+            fetch(`${API_URL}/api/admin/users`, {
+                headers: {
+                    'x-auth-token': token
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to load users');
+                }
+                return response.json();
+            })
+            .then(users => {
+                displayStudents(users);
+            })
+            .catch(error => {
+                console.error('Error loading students:', error);
+                alert('Failed to load students: ' + error.message);
+            });
+        }
+        
+        // Display students in table
+        function displayStudents(users) {
+            const tableBody = document.getElementById('studentsTableBody');
+            tableBody.innerHTML = '';
+            
+            users.forEach(user => {
+                if (!user.isAdmin) {
+                    const row = document.createElement('tr');
+                    
+                    // Calculate days remaining
+                    const endDate = new Date(user.membershipEndDate);
+                    const today = new Date();
+                    const daysRemaining = Math.ceil((endDate - today) / (1000 * 60 * 60 * 24));
+                    
+                    // Determine payment status
+                    let paymentStatus = 'Expired';
+                    if (daysRemaining > 0) {
+                        paymentStatus = 'Active';
+                    }
+                    
+                    row.innerHTML = `
+                        <td>${user.firstName} ${user.lastName}</td>
+                        <td>${user.mobileNumber}</td>
+                        <td>${user.email}</td>
+                        <td>
+                            <span id="days-${user._id}">${daysRemaining}</span> days
+                            <button class="btn btn-sm btn-outline-primary ms-2" onclick="editUserDays('${user._id}', ${daysRemaining})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </td>
+                        <td>
+                            <span class="badge ${paymentStatus === 'Active' ? 'bg-success' : 'bg-danger'}">
+                                ${paymentStatus}
+                            </span>
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-primary" onclick="editUserPayment('${user._id}', '${user.firstName} ${user.lastName}')">
+                                Edit Payment
+                            </button>
+                        </td>
+                    `;
+                    
+                    tableBody.appendChild(row);
+                }
+            });
+            
+            // Initialize DataTable
+            $('#studentsTable').DataTable({
+                responsive: true,
+                destroy: true,
+                order: [[3, 'desc']] // Sort by days remaining
+            });
+        }
+        
+        // Edit user days function
+        function editUserDays(userId, currentDays) {
+            const newDays = prompt("Enter new number of days:", currentDays);
+            
+            if (newDays !== null && !isNaN(newDays) && newDays.trim() !== '') {
+                const token = localStorage.getItem('token');
+                
+                fetch(`${API_URL}/api/admin/update-user-days`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-auth-token': token
+                    },
+                    body: JSON.stringify({
+                        userId: userId,
+                        days: parseInt(newDays)
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById(`days-${userId}`).textContent = newDays;
+                        alert('Days updated successfully');
+                    } else {
+                        alert('Failed to update days');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error updating days:', error);
+                    alert('Error updating days');
+                });
+            }
+        }
+        
+        // Edit user payment function
+        function editUserPayment(userId, userName) {
+            // Create modal for payment editing
+            const modal = document.createElement('div');
+            modal.className = 'modal fade';
+            modal.id = 'paymentEditModal';
+            modal.setAttribute('tabindex', '-1');
+            modal.setAttribute('aria-labelledby', 'paymentEditModalLabel');
+            modal.setAttribute('aria-hidden', 'true');
+            
+            modal.innerHTML = `
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="paymentEditModalLabel">Edit Payment for ${userName}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="paymentEditForm">
+                                <div class="mb-3">
+                                    <label for="paymentAmount" class="form-label">Payment Amount (₹)</label>
+                                    <input type="number" class="form-control" id="paymentAmount" value="500" min="0">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="paymentDays" class="form-label">Membership Days</label>
+                                    <input type="number" class="form-control" id="paymentDays" value="30" min="0">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="paymentNote" class="form-label">Payment Note</label>
+                                    <textarea class="form-control" id="paymentNote" rows="2" placeholder="Optional note about this payment"></textarea>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary" onclick="submitPaymentEdit('${userId}')">
+                                Save Changes
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Add modal to body if it doesn't exist
+            if (!document.getElementById('paymentEditModal')) {
+                document.body.appendChild(modal);
+            }
+            
+            // Show modal
+            const paymentModal = new bootstrap.Modal(document.getElementById('paymentEditModal'));
+            paymentModal.show();
+        }
+        
+        // Submit payment edit
+        function submitPaymentEdit(userId) {
+            const amount = document.getElementById('paymentAmount').value;
+            const days = document.getElementById('paymentDays').value;
+            const note = document.getElementById('paymentNote').value;
+            const token = localStorage.getItem('token');
+            
+            if (!amount || !days) {
+                alert('Please enter both amount and days');
+                return;
+            }
+            
+            // Show loading indicator
+            const saveButton = document.querySelector('[onclick^="submitPaymentEdit"]');
+            const originalText = saveButton.innerHTML;
+            saveButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...';
+            saveButton.disabled = true;
+            
+            // Log the request for debugging
+            console.log('Sending payment update request to:', `${API_URL}/api/admin/update-user-payment`);
+            console.log('Request payload:', {
+                userId: userId,
+                amount: parseInt(amount),
+                days: parseInt(days),
+                note: note
+            });
+            
+            fetch(`${API_URL}/api/admin/update-user-payment`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-auth-token': token
+                },
+                body: JSON.stringify({
+                    userId: userId,
+                    amount: parseInt(amount),
+                    days: parseInt(days),
+                    note: note
+                })
+            })
+            .then(response => {
+                console.log('Response status:', response.status);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Reset button
+                saveButton.innerHTML = originalText;
+                saveButton.disabled = false;
+                
+                if (data.success) {
+                    // Close modal
+                    const paymentModal = bootstrap.Modal.getInstance(document.getElementById('paymentEditModal'));
+                    paymentModal.hide();
+                    
+                    // Refresh data
+                    loadStudents();
+                    
+                    alert('Payment updated successfully');
+                } else {
+                    alert('Failed to update payment: ' + (data.message || 'Unknown error'));
+                }
+            })
+            .catch(error => {
+                // Reset button
+                saveButton.innerHTML = originalText;
+                saveButton.disabled = false;
+                
+                console.error('Error updating payment:', error);
+                alert('Error updating payment: ' + error.message);
+            });
+        }
+        
+        // Show all students when button is clicked
+        document.getElementById('showAllStudents').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Show students section, hide expense manager and about section
+            document.getElementById('studentsSection').style.display = 'block';
+            document.getElementById('expenseManagerSection').style.display = 'none';
+            document.getElementById('aboutSection').style.display = 'none';
+            
+            // Update active nav item
+            this.classList.add('active');
+            document.getElementById('showExpenseManager').classList.remove('active');
+            document.getElementById('showAboutSection').classList.remove('active');
+            
+            loadStudents();
+        });
+        
+        // Show expense manager when button is clicked
+        document.getElementById('showExpenseManager').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Show expense manager section, hide students and about section
+            document.getElementById('studentsSection').style.display = 'none';
+            document.getElementById('expenseManagerSection').style.display = 'block';
+            document.getElementById('aboutSection').style.display = 'none';
+            
+            // Update active nav item
+            this.classList.add('active');
+            document.getElementById('showAllStudents').classList.remove('active');
+            document.getElementById('showAboutSection').classList.remove('active');
+            
+            // Load expenses when tab is shown
+            loadExpenses();
+        });
+        
+        // Show about section when button is clicked
+        document.getElementById('showAboutSection').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Show about section, hide students and expense manager
+            document.getElementById('studentsSection').style.display = 'none';
+            document.getElementById('expenseManagerSection').style.display = 'none';
+            document.getElementById('aboutSection').style.display = 'block';
+            
+            // Update active nav item
+            this.classList.add('active');
+            document.getElementById('showAllStudents').classList.remove('active');
+            document.getElementById('showExpenseManager').classList.remove('active');
+        });
+        
+        // Add Expense Button Click
+        document.getElementById('addExpenseBtn').addEventListener('click', function() {
+            // Create modal for adding expense
+            const modal = document.createElement('div');
+            modal.className = 'modal fade';
+            modal.id = 'addExpenseModal';
+            modal.setAttribute('tabindex', '-1');
+            modal.setAttribute('aria-labelledby', 'addExpenseModalLabel');
+            modal.setAttribute('aria-hidden', 'true');
+            
+            modal.innerHTML = `
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addExpenseModalLabel">Add New Expense</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="expenseForm">
+                                <div class="mb-3">
+                                    <label for="expenseType" class="form-label">Type</label>
+                                    <select class="form-select" id="expenseType" required>
+                                        <option value="expense">Expense</option>
+                                        <option value="income">Income</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="expenseCategory" class="form-label">Category</label>
+                                    <select class="form-select" id="expenseCategory" required>
+                                        <option value="books">Books</option>
+                                        <option value="utilities">Utilities</option>
+                                        <option value="rent">Rent</option>
+                                        <option value="salary">Salary</option>
+                                        <option value="membership">Membership Fee</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="expenseAmount" class="form-label">Amount (₹)</label>
+                                    <input type="number" class="form-control" id="expenseAmount" required min="0">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="expenseDate" class="form-label">Date</label>
+                                    <input type="date" class="form-control" id="expenseDate" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="expenseDescription" class="form-label">Description</label>
+                                    <textarea class="form-control" id="expenseDescription" rows="2" required></textarea>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary" id="saveExpenseBtn">Save Expense</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Add modal to body if it doesn't exist
+            if (!document.getElementById('addExpenseModal')) {
+                document.body.appendChild(modal);
+            }
+            
+            // Set today's date as default
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('expenseDate').value = today;
+            
+            // Show modal
+            const expenseModal = new bootstrap.Modal(document.getElementById('addExpenseModal'));
+            expenseModal.show();
+            
+            // Save expense button click
+            document.getElementById('saveExpenseBtn').addEventListener('click', function() {
+                saveExpense();
+            });
+        });
+        
+        // Save expense to database
+        function saveExpense() {
+            const type = document.getElementById('expenseType').value;
+            const category = document.getElementById('expenseCategory').value;
+            const amount = document.getElementById('expenseAmount').value;
+            const date = document.getElementById('expenseDate').value;
+            const description = document.getElementById('expenseDescription').value;
+            const token = localStorage.getItem('token');
+            
+            // Validate form
+            if (!type || !category || !amount || !date || !description) {
+                alert('Please fill all fields');
+                return;
+            }
+            
+            // Show loading state
+            const saveButton = document.getElementById('saveExpenseBtn');
+            const originalText = saveButton.innerHTML;
+            saveButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...';
+            saveButton.disabled = true;
+            
+            // First verify user is authenticated and has admin rights
+            fetch(`${API_URL}/api/user`, {
+                headers: {
+                    'x-auth-token': token
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Authentication failed: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(userData => {
+                // Verify user is admin
+                if (!userData.isAdmin) {
+                    throw new Error('Access denied: Admin privileges required');
+                }
+                
+                console.log('Sending expense data:', {
+                    type,
+                    category,
+                    amount: parseInt(amount),
+                    date: new Date(date),
+                    description,
+                    userId: userData._id // Include user ID explicitly
+                });
+                
+                // Send to server with verified admin token
+                return fetch(`${API_URL}/api/admin/expenses`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-auth-token': token
+                    },
+                    body: JSON.stringify({
+                        type,
+                        category,
+                        amount: parseInt(amount),
+                        date: new Date(date),
+                        description,
+                        userId: userData._id // Include user ID explicitly
+                    })
+                });
+            })
+            .then(response => {
+                console.log('Response status:', response.status);
+                if (!response.ok) {
+                    return response.json().then(errData => {
+                        throw new Error(errData.message || `Failed to save expense: ${response.status}`);
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Reset button
+                saveButton.innerHTML = originalText;
+                saveButton.disabled = false;
+                
+                if (data.success) {
+                    // Close modal
+                    const expenseModal = bootstrap.Modal.getInstance(document.getElementById('addExpenseModal'));
+                    expenseModal.hide();
+                    
+                    // Reload expenses
+                    loadExpenses();
+                    
+                    alert('Expense saved successfully');
+                } else {
+                    alert('Failed to save expense: ' + data.message);
+                }
+            })
+            .catch(error => {
+                // Reset button
+                saveButton.innerHTML = originalText;
+                saveButton.disabled = false;
+                
+                console.error('Error saving expense:', error);
+                alert('Error saving expense: ' + error.message);
+            });
+        }
+        
+        // Load expenses from server
+        function loadExpenses() {
+            const token = localStorage.getItem('token');
+            
+            if (!token) {
+                console.error('No authentication token found');
+                alert('Authentication error: Please log in again');
+                return;
+            }
+            
+            console.log('API URL:', API_URL);
+            console.log('Fetching expenses with token:', token);
+            
+            // First check if the user is authenticated and has admin rights
+            fetch(`${API_URL}/api/user`, {
+                headers: {
+                    'x-auth-token': token
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Authentication failed: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(userData => {
+                // Verify user is admin
+                if (!userData.isAdmin) {
+                    throw new Error('Access denied: Admin privileges required');
+                }
+                
+                // Now fetch expenses with the verified admin token
+                return fetch(`${API_URL}/api/admin/expenses`, {
+                    headers: {
+                        'x-auth-token': token
+                    }
+                });
+            })
+            .then(response => {
+                console.log('Expenses response status:', response.status);
+                if (!response.ok) {
+                    throw new Error(`Failed to load expenses: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Expenses data received:', data);
+                if (data.success) {
+                    displayExpenses(data.expenses);
+                    updateExpenseSummary(data.expenses);
+                } else {
+                    throw new Error(data.message || 'No expense data received');
+                }
+            })
+            .catch(error => {
+                console.error('Error loading expenses:', error);
+                document.getElementById('expenseTableBody').innerHTML = 
+                    `<tr><td colspan="7" class="text-center text-danger">Error: ${error.message}</td></tr>`;
+                
+                // Reset summary cards on error
+                document.getElementById('totalIncome').textContent = '₹0';
+                document.getElementById('totalExpenses').textContent = '₹0';
+                document.getElementById('netBalance').textContent = '₹0';
+            });
+        }
+        
+        // Display expenses in table
+        function displayExpenses(expenses) {
+            const tableBody = document.getElementById('expenseTableBody');
+            tableBody.innerHTML = '';
+            
+            if (expenses.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="7" class="text-center">No expenses recorded</td></tr>';
+                return;
+            }
+            
+            expenses.forEach(expense => {
+                const row = document.createElement('tr');
+                
+                // Format date
+                const expenseDate = new Date(expense.date);
+                const formattedDate = expenseDate.toLocaleDateString('en-IN', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                });
+                
+                // Set row class based on type
+                if (expense.type === 'income') {
+                    row.classList.add('table-success');
+                }
+                
+                row.innerHTML = `
+                    <td>${formattedDate}</td>
+                    <td>${expense.category}</td>
+                    <td>${expense.description}</td>
+                    <td>₹${expense.amount}</td>
+                    <td><span class="badge ${expense.type === 'income' ? 'bg-success' : 'bg-danger'}">${expense.type}</span></td>
+                    <td>${expense.addedBy || 'Admin'}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary" onclick="editExpense('${expense._id}')">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteExpense('${expense._id}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+            
+            // Initialize DataTable for sorting and searching
+            if ($.fn.DataTable.isDataTable('#expenseTable')) {
+                $('#expenseTable').DataTable().destroy();
+            }
+            
+            $('#expenseTable').DataTable({
+                order: [[0, 'desc']], // Sort by date descending
+                pageLength: 10,
+                lengthMenu: [10, 25, 50, 100]
+            });
+        }
+        
+        // Update expense summary
+        function updateExpenseSummary(expenses) {
+            let totalIncome = 0;
+            let totalExpenses = 0;
+            
+            expenses.forEach(expense => {
+                if (expense.type === 'income') {
+                    totalIncome += expense.amount;
+                } else {
+                    totalExpenses += expense.amount;
+                }
+            });
+            
+            const netBalance = totalIncome - totalExpenses;
+            
+            document.getElementById('totalIncome').textContent = '₹' + totalIncome;
+            document.getElementById('totalExpenses').textContent = '₹' + totalExpenses;
+            document.getElementById('netBalance').textContent = '₹' + netBalance;
+            
+            // Set color for net balance
+            if (netBalance < 0) {
+                document.getElementById('netBalance').parentElement.parentElement.classList.remove('bg-success');
+                document.getElementById('netBalance').parentElement.parentElement.classList.add('bg-danger');
+            } else {
+                document.getElementById('netBalance').parentElement.parentElement.classList.remove('bg-danger');
+                document.getElementById('netBalance').parentElement.parentElement.classList.add('bg-success');
+            }
+        }
+        
+        // Edit expense function
+        window.editExpense = function(expenseId) {
+            alert('Edit functionality will be implemented soon');
+        };
+        
+        // Delete expense function
+        window.deleteExpense = function(expenseId) {
+            if (confirm('Are you sure you want to delete this expense?')) {
+                const token = localStorage.getItem('token');
+                
+                fetch(`${API_URL}/api/admin/expenses/${expenseId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'x-auth-token': token
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to delete expense');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        loadExpenses();
+                        alert('Expense deleted successfully');
+                    } else {
+                        alert('Failed to delete expense');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error deleting expense:', error);
+                    alert('Error deleting expense: ' + error.message);
+                });
+            }
+        };
+    </script>
+</body>
+</html>
