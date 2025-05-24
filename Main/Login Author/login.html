@@ -207,12 +207,13 @@
                     body: JSON.stringify({ email, password })
                 });
                 
-                const data = await response.json();
-                
+                // Check if response is ok before trying to parse JSON
                 if (!response.ok) {
-                    throw new Error(data.message || 'Login failed');
+                    const errorText = await response.text();
+                    throw new Error(errorText || 'Login failed');
                 }
                 
+                const data = await response.json();
                 console.log('Login successful:', data);
                 
                 // Store auth token and user data in localStorage
@@ -278,11 +279,13 @@
                     })
                 });
                 
-                const data = await response.json();
-                
+                // Check if response is ok before trying to parse JSON
                 if (!response.ok) {
-                    throw new Error(data.message || 'Registration failed');
+                    const errorText = await response.text();
+                    throw new Error(errorText || 'Registration failed');
                 }
+                
+                const data = await response.json();
                 
                 console.log('Registration successful:', data);
                 
