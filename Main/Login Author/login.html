@@ -366,6 +366,7 @@
                 };
                 
                 let data;
+                let savedToDatabase = false;
                 
                 // Try server registration first
                 try {
@@ -382,11 +383,16 @@
                     if (response.ok) {
                         data = await response.json();
                         console.log('Server registration successful');
+                        savedToDatabase = true;
                     } else {
                         throw new Error('Server registration failed');
                     }
                 } catch (serverError) {
                     console.warn('Server registration failed, falling back to mock authentication:', serverError);
+                    
+                    // Add the registration to the pending queue to try again later
+                    pendingRegistrations.add(userData);
+                    console.log('Added registration to pending queue for later processing');
                     
                     // Fallback to mock authentication
                     data = mockAuthSystem.register(userData);
@@ -402,8 +408,12 @@
                 localStorage.setItem('userName', `${data.user.firstName} ${data.user.lastName}`);
                 localStorage.setItem('isAdmin', data.user.isAdmin ? 'true' : 'false');
                 
-                // Show success message
-                alert('Registration successful! You will now be redirected to the dashboard.');
+                // Show success message with database status
+                if (savedToDatabase) {
+                    alert('Registration successful! Your account has been saved to the database. You will now be redirected to the dashboard.');
+                } else {
+                    alert('Registration successful! However, your account could not be saved to the database due to server issues. We will automatically try to save your account when the server becomes available. You will now be redirected to the dashboard.');
+                }
                 
                 // Redirect to dashboard
                 window.location.href = '../dashboard/index.html';
@@ -415,6 +425,82 @@
                 submitButton.disabled = false;
                 submitButton.innerHTML = originalButtonText;
             }
+        });
+
+        // Queue for storing registration data that failed to save to the server
+        const pendingRegistrations = {
+            // Get the queue from localStorage or initialize empty array
+            get: function() {
+                const queue = localStorage.getItem('pendingRegistrations');
+                return queue ? JSON.parse(queue) : [];
+            },
+            
+            // Add a registration to the queue
+            add: function(userData) {
+                const queue = this.get();
+                queue.push({
+                    userData: userData,
+                    timestamp: Date.now()
+                });
+                localStorage.setItem('pendingRegistrations', JSON.stringify(queue));
+            },
+            
+            // Remove a registration from the queue
+            remove: function(index) {
+                const queue = this.get();
+                queue.splice(index, 1);
+                localStorage.setItem('pendingRegistrations', JSON.stringify(queue));
+            },
+            
+            // Process the queue and try to send pending registrations to the server
+            process: async function() {
+                const queue = this.get();
+                if (queue.length === 0) return;
+                
+                console.log(`Processing ${queue.length} pending registrations...`);
+                
+                for (let i = 0; i < queue.length; i++) {
+                    try {
+                        const item = queue[i];
+                        
+                        // Skip items that are too old (more than 7 days)
+                        if (Date.now() - item.timestamp > 7 * 24 * 60 * 60 * 1000) {
+                            this.remove(i);
+                            i--;
+                            continue;
+                        }
+                        
+                        console.log(`Attempting to send registration to server: ${item.userData.email}`);
+                        
+                        const response = await fetch(`${API_URL}/register`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(item.userData)
+                        });
+                        
+                        if (response.ok) {
+                            console.log(`Successfully saved registration to database: ${item.userData.email}`);
+                            this.remove(i);
+                            i--;
+                        } else {
+                            console.log(`Failed to save registration to database: ${item.userData.email}`);
+                        }
+                    } catch (error) {
+                        console.error('Error processing pending registration:', error);
+                    }
+                }
+            }
+        };
+        
+        // Process pending registrations on page load and periodically
+        document.addEventListener('DOMContentLoaded', function() {
+            // Try to process pending registrations on page load
+            pendingRegistrations.process();
+            
+            // Try to process pending registrations every 5 minutes
+            setInterval(pendingRegistrations.process.bind(pendingRegistrations), 5 * 60 * 1000);
         });
 
         // Add event listener to login form
