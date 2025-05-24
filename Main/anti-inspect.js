@@ -1,9 +1,12 @@
 /**
  * Anti-Inspect Script for Sinha Library
- * This script disables various browser inspection methods
+ * This script is currently disabled to allow debugging
  */
 
 (function() {
+    // All anti-inspection features are commented out to allow debugging
+    
+    /*
     // Disable right-click context menu
     document.addEventListener('contextmenu', function(e) {
         e.preventDefault();
@@ -77,4 +80,7 @@
     document.addEventListener('selectstart', function(e) {
         e.preventDefault();
     });
+    */
+
+    console.log('Anti-inspection features are disabled for debugging purposes.');
 })();
