@@ -725,20 +725,22 @@ app.put('/api/admin/expenses/:id', auth, async (req, res) => {
   }
 });
 
-// Start server
-const server = app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`API endpoints available at http://localhost:${PORT}/api`);
-  
-  // Log all available routes for debugging
-  console.log('Available API routes:');
-  app._router.stack
-    .filter(r => r.route)
-    .map(r => {
-      const methods = Object.keys(r.route.methods).map(m => m.toUpperCase()).join(',');
-      console.log(`${methods} ${r.route.path}`);
-    });
-});
+// Start server - Only run this in non-Vercel environments
+if (process.env.NODE_ENV !== 'production') {
+  const server = app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+    console.log(`API endpoints available at http://localhost:${PORT}/api`);
+    
+    // Log all available routes for debugging
+    console.log('Available API routes:');
+    app._router.stack
+      .filter(r => r.route)
+      .map(r => {
+        const methods = Object.keys(r.route.methods).map(m => m.toUpperCase()).join(',');
+        console.log(`${methods} ${r.route.path}`);
+      });
+  });
+}
 
-// Export for testing
-module.exports = { app, server };
+// Export for Vercel serverless functions
+module.exports = app;
