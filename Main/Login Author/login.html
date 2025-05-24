@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,9 +11,11 @@
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="login.css">
 </head>
+
 <body>
     <div class="container-fluid">
         <div class="row">
@@ -39,35 +42,42 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Right Side - Login/Signup Forms -->
             <div class="col-lg-6 right-side">
                 <div class="form-container">
                     <div class="back-home">
                         <a href="../index.html"><i class="fas fa-arrow-left"></i> Back to Home</a>
                     </div>
-                    
+
                     <!-- Form Navigation -->
                     <ul class="nav nav-pills mb-4" id="pills-tab" role="tablist">
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="pills-login-tab" data-bs-toggle="pill" data-bs-target="#pills-login" type="button" role="tab" aria-controls="pills-login" aria-selected="true">Login</button>
+                            <button class="nav-link active" id="pills-login-tab" data-bs-toggle="pill"
+                                data-bs-target="#pills-login" type="button" role="tab" aria-controls="pills-login"
+                                aria-selected="true">Login</button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="pills-signup-tab" data-bs-toggle="pill" data-bs-target="#pills-signup" type="button" role="tab" aria-controls="pills-signup" aria-selected="false">Sign Up</button>
+                            <button class="nav-link" id="pills-signup-tab" data-bs-toggle="pill"
+                                data-bs-target="#pills-signup" type="button" role="tab" aria-controls="pills-signup"
+                                aria-selected="false">Sign Up</button>
                         </li>
                     </ul>
-                    
+
                     <!-- Form Content -->
                     <div class="tab-content" id="pills-tabContent">
                         <!-- Login Form -->
-                        <div class="tab-pane fade show active" id="pills-login" role="tabpanel" aria-labelledby="pills-login-tab">
+                        <div class="tab-pane fade show active" id="pills-login" role="tabpanel"
+                            aria-labelledby="pills-login-tab">
                             <form id="loginForm">
                                 <div class="form-floating mb-3">
-                                    <input type="email" class="form-control" id="loginEmail" placeholder="name@example.com" required>
+                                    <input type="email" class="form-control" id="loginEmail"
+                                        placeholder="name@example.com" required>
                                     <label for="loginEmail">Email address</label>
                                 </div>
                                 <div class="form-floating mb-3 password-container">
-                                    <input type="password" class="form-control" id="loginPassword" placeholder="Password" required>
+                                    <input type="password" class="form-control" id="loginPassword"
+                                        placeholder="Password" required>
                                     <label for="loginPassword">Password</label>
                                     <span class="password-toggle" onclick="togglePassword('loginPassword', this)">
                                         <i class="fas fa-eye"></i>
@@ -83,7 +93,8 @@
                                     <button type="submit" class="btn btn-primary btn-lg">Login</button>
                                 </div>
                                 <div class="text-center mt-3">
-                                    <p>Don't have an account? <a href="signup.html" class="signup-link">Create one now</a></p>
+                                    <p>Don't have an account? <a href="signup.html" class="signup-link">Create one
+                                            now</a></p>
                                 </div>
                                 <div class="divider">
                                     <span>or continue with</span>
@@ -98,41 +109,47 @@
                                 </div>
                             </form>
                         </div>
-                        
+
                         <!-- Signup Form -->
                         <div class="tab-pane fade" id="pills-signup" role="tabpanel" aria-labelledby="pills-signup-tab">
                             <form id="signupForm">
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <div class="form-floating">
-                                            <input type="text" class="form-control" id="firstName" placeholder="First Name" required>
+                                            <input type="text" class="form-control" id="firstName"
+                                                placeholder="First Name" required>
                                             <label for="firstName">First Name</label>
                                         </div>
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <div class="form-floating">
-                                            <input type="text" class="form-control" id="lastName" placeholder="Last Name" required>
+                                            <input type="text" class="form-control" id="lastName"
+                                                placeholder="Last Name" required>
                                             <label for="lastName">Last Name</label>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="form-floating mb-3">
-                                    <input type="email" class="form-control" id="signupEmail" placeholder="name@example.com" required>
+                                    <input type="email" class="form-control" id="signupEmail"
+                                        placeholder="name@example.com" required>
                                     <label for="signupEmail">Email address</label>
                                 </div>
                                 <div class="form-floating mb-3">
-                                    <input type="tel" class="form-control" id="phone" placeholder="Phone Number" required>
+                                    <input type="tel" class="form-control" id="phone" placeholder="Phone Number"
+                                        required>
                                     <label for="phone">Phone Number</label>
                                 </div>
                                 <div class="form-floating mb-3 password-container">
-                                    <input type="password" class="form-control" id="signupPassword" placeholder="Password" required>
+                                    <input type="password" class="form-control" id="signupPassword"
+                                        placeholder="Password" required>
                                     <label for="signupPassword">Password</label>
                                     <span class="password-toggle" onclick="togglePassword('signupPassword', this)">
                                         <i class="fas fa-eye"></i>
                                     </span>
                                 </div>
                                 <div class="form-floating mb-3 password-container">
-                                    <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm Password" required>
+                                    <input type="password" class="form-control" id="confirmPassword"
+                                        placeholder="Confirm Password" required>
                                     <label for="confirmPassword">Confirm Password</label>
                                     <span class="password-toggle" onclick="togglePassword('confirmPassword', this)">
                                         <i class="fas fa-eye"></i>
@@ -141,7 +158,8 @@
                                 <div class="form-check mb-3">
                                     <input class="form-check-input" type="checkbox" value="" id="termsCheck" required>
                                     <label class="form-check-label" for="termsCheck">
-                                        I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+                                        I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy
+                                            Policy</a>
                                     </label>
                                 </div>
                                 <div class="d-grid">
@@ -179,7 +197,7 @@
         function togglePassword(inputId, toggleElement) {
             const passwordInput = document.getElementById(inputId);
             const icon = toggleElement.querySelector('i');
-            
+
             if (passwordInput.type === 'password') {
                 passwordInput.type = 'text';
                 icon.classList.remove('fa-eye');
@@ -212,14 +230,14 @@
                     isAdmin: false
                 }
             ],
-            
+
             // Find user by email
-            findUserByEmail: function(email) {
+            findUserByEmail: function (email) {
                 return this.users.find(user => user.email.toLowerCase() === email.toLowerCase());
             },
-            
+
             // Add new user
-            addUser: function(userData) {
+            addUser: function (userData) {
                 const newUser = {
                     id: (this.users.length + 1).toString(),
                     firstName: userData.firstName,
@@ -230,34 +248,34 @@
                     address: userData.address || '',
                     isAdmin: false
                 };
-                
+
                 this.users.push(newUser);
                 return newUser;
             },
-            
+
             // Login user
-            login: function(email, password) {
+            login: function (email, password) {
                 const user = this.findUserByEmail(email);
                 if (!user || user.password !== password) {
                     throw new Error('Invalid email or password');
                 }
-                
+
                 return {
                     token: 'mock-token-' + Date.now(),
                     user: { ...user, password: undefined } // Remove password from response
                 };
             },
-            
+
             // Register user
-            register: function(userData) {
+            register: function (userData) {
                 // Check if email already exists
                 const existingUser = this.findUserByEmail(userData.email);
                 if (existingUser) {
                     throw new Error('Email already registered');
                 }
-                
+
                 const newUser = this.addUser(userData);
-                
+
                 return {
                     token: 'mock-token-' + Date.now(),
                     user: { ...newUser, password: undefined } // Remove password from response
@@ -269,20 +287,20 @@
         async function loginUser() {
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
-            
+
             // Show loading state
             const submitButton = document.querySelector('#loginForm button[type="submit"]');
             const originalButtonText = submitButton.innerHTML;
             submitButton.disabled = true;
             submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
-            
+
             try {
                 let data;
-                
+
                 // Try server login first
                 try {
                     console.log('Attempting server login to:', `${API_URL}/api/login`);
-                    
+
                     const response = await fetch(`${API_URL}/api/login`, {
                         method: 'POST',
                         headers: {
@@ -290,7 +308,7 @@
                         },
                         body: JSON.stringify({ email, password })
                     });
-                    
+
                     if (response.ok) {
                         data = await response.json();
                         console.log('Server login successful');
@@ -299,21 +317,21 @@
                     }
                 } catch (serverError) {
                     console.warn('Server login failed, falling back to mock authentication:', serverError);
-                    
+
                     // Fallback to mock authentication
                     data = mockAuthSystem.login(email, password);
                     console.log('Mock login successful');
                 }
-                
+
                 console.log('Login successful:', data);
-                
+
                 // Store auth token and user data in localStorage
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('userId', data.user.id);
                 localStorage.setItem('userEmail', data.user.email);
                 localStorage.setItem('userName', `${data.user.firstName} ${data.user.lastName}`);
                 localStorage.setItem('isAdmin', data.user.isAdmin ? 'true' : 'false');
-                
+
                 // Redirect to appropriate dashboard based on user role
                 if (data.user.isAdmin) {
                     window.location.href = '../dashboard/admin.html';
@@ -331,29 +349,29 @@
         }
 
         // Form submission handling for signup with mock auth fallback
-        document.getElementById('signupForm').addEventListener('submit', async function(e) {
+        document.getElementById('signupForm').addEventListener('submit', async function (e) {
             e.preventDefault();
-            
+
             // Validate passwords match
             const password = document.getElementById('signupPassword').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
-            
+
             if (password !== confirmPassword) {
                 alert('Passwords do not match');
                 return;
             }
-            
+
             const email = document.getElementById('signupEmail').value;
             const firstName = document.getElementById('firstName').value;
             const lastName = document.getElementById('lastName').value;
             const phone = document.getElementById('phone').value;
-            
+
             // Show loading state
             const submitButton = this.querySelector('button[type="submit"]');
             const originalButtonText = submitButton.innerHTML;
             submitButton.disabled = true;
             submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-            
+
             try {
                 // Create user data object
                 const userData = {
@@ -364,22 +382,21 @@
                     address: 'Default Address',
                     password
                 };
-                
+
                 let data;
                 let savedToDatabase = false;
-                
+
                 // Try server registration first
                 try {
-                    console.log('Attempting server login to:', `${API_URL}/api/login`);
-                    
-                    const response = await fetch(`${API_URL}/api/login`, {
+                    console.log('Attempting server registration to:', `${API_URL}/api/register`);
+                    const response = await fetch(`${API_URL}/api/register`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify(userData)
                     });
-                    
+
                     if (response.ok) {
                         data = await response.json();
                         console.log('Server registration successful');
@@ -389,32 +406,32 @@
                     }
                 } catch (serverError) {
                     console.warn('Server registration failed, falling back to mock authentication:', serverError);
-                    
+
                     // Add the registration to the pending queue to try again later
                     pendingRegistrations.add(userData);
                     console.log('Added registration to pending queue for later processing');
-                    
+
                     // Fallback to mock authentication
                     data = mockAuthSystem.register(userData);
                     console.log('Mock registration successful');
                 }
-                
+
                 console.log('Registration successful:', data);
-                
+
                 // Store auth token and user data in localStorage
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('userId', data.user.id);
                 localStorage.setItem('userEmail', data.user.email);
                 localStorage.setItem('userName', `${data.user.firstName} ${data.user.lastName}`);
                 localStorage.setItem('isAdmin', data.user.isAdmin ? 'true' : 'false');
-                
+
                 // Show success message with database status
                 if (savedToDatabase) {
                     alert('Registration successful! Your account has been saved to the database. You will now be redirected to the dashboard.');
                 } else {
                     alert('Registration successful! However, your account could not be saved to the database due to server issues. We will automatically try to save your account when the server becomes available. You will now be redirected to the dashboard.');
                 }
-                
+
                 // Redirect to dashboard
                 window.location.href = '../dashboard/index.html';
             } catch (err) {
@@ -430,13 +447,13 @@
         // Queue for storing registration data that failed to save to the server
         const pendingRegistrations = {
             // Get the queue from localStorage or initialize empty array
-            get: function() {
+            get: function () {
                 const queue = localStorage.getItem('pendingRegistrations');
                 return queue ? JSON.parse(queue) : [];
             },
-            
+
             // Add a registration to the queue
-            add: function(userData) {
+            add: function (userData) {
                 const queue = this.get();
                 queue.push({
                     userData: userData,
@@ -444,34 +461,34 @@
                 });
                 localStorage.setItem('pendingRegistrations', JSON.stringify(queue));
             },
-            
+
             // Remove a registration from the queue
-            remove: function(index) {
+            remove: function (index) {
                 const queue = this.get();
                 queue.splice(index, 1);
                 localStorage.setItem('pendingRegistrations', JSON.stringify(queue));
             },
-            
+
             // Process the queue and try to send pending registrations to the server
-            process: async function() {
+            process: async function () {
                 const queue = this.get();
                 if (queue.length === 0) return;
-                
+
                 console.log(`Processing ${queue.length} pending registrations...`);
-                
+
                 for (let i = 0; i < queue.length; i++) {
                     try {
                         const item = queue[i];
-                        
+
                         // Skip items that are too old (more than 7 days)
                         if (Date.now() - item.timestamp > 7 * 24 * 60 * 60 * 1000) {
                             this.remove(i);
                             i--;
                             continue;
                         }
-                        
+
                         console.log(`Attempting to send registration to server: ${item.userData.email}`);
-                        
+
                         const response = await fetch(`${API_URL}/register`, {
                             method: 'POST',
                             headers: {
@@ -479,7 +496,7 @@
                             },
                             body: JSON.stringify(item.userData)
                         });
-                        
+
                         if (response.ok) {
                             console.log(`Successfully saved registration to database: ${item.userData.email}`);
                             this.remove(i);
@@ -493,21 +510,21 @@
                 }
             }
         };
-        
+
         // Process pending registrations on page load and periodically
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             // Try to process pending registrations on page load
             pendingRegistrations.process();
-            
+
             // Try to process pending registrations every 5 minutes
             setInterval(pendingRegistrations.process.bind(pendingRegistrations), 5 * 60 * 1000);
         });
 
         // Add event listener to login form
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const loginForm = document.getElementById('loginForm');
             if (loginForm) {
-                loginForm.addEventListener('submit', function(e) {
+                loginForm.addEventListener('submit', function (e) {
                     e.preventDefault();
                     loginUser();
                 });
@@ -516,11 +533,12 @@
 
         // Social login handlers
         document.querySelectorAll('.social-login button').forEach(button => {
-            button.addEventListener('click', async function() {
+            button.addEventListener('click', async function () {
                 const provider = this.textContent.trim().toLowerCase();
                 alert(`${provider} login is not implemented yet.`);
             });
         });
     </script>
 </body>
+
 </html>
