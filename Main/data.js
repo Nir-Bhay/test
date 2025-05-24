@@ -14,7 +14,7 @@ const sinhaLibraryData = {
         establishedDate: "July 21, 2023",
         email: "sinhalibrary9700@gmail.com",
         phone: "+91 7319692439",
-        address: "Dhaiya Rd, opp. to CMRI gate, near Hotel SG International, Surya Vihar Colony, Dhaiya, Dhanbad, Jharkhand 826001",
+        address: "Dhaiya Rd, opp. to CMRI gate, near Hotel SG International, Surya Vihar Colony, Dhanbad, Jharkhand 826001",
         mapLink: "https://maps.app.goo.gl/FPFaqKvu8oLaMqrm9",
         socialMedia: {
             instagram: "https://www.instagram.com/sinhalibrary?utm_source=qr&igsh=a2diYWV2d200NzRw",
@@ -220,9 +220,15 @@ const sinhaLibraryData = {
 
 // API URL Configuration
 const getApiUrl = () => {
+    // Using a direct URL to your Vercel deployment
+    return 'https://dipusingh123456789.vercel.app/api';
+    
+    // Uncomment this for local development if needed
+    /*
     return window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
         ? 'http://localhost:5000/api'
-        : '/api';
+        : 'https://dipusingh123456789.vercel.app/api';
+    */
 };
 
 // Export the data for use in other files
