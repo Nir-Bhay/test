@@ -220,15 +220,8 @@ const sinhaLibraryData = {
 
 // API URL Configuration
 const getApiUrl = () => {
-    // Using a direct URL to your Vercel deployment
+    // Using the correct Vercel API URL
     return 'https://dipusingh123456789.vercel.app/api';
-    
-    // Uncomment this for local development if needed
-    /*
-    return window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-        ? 'http://localhost:5000/api'
-        : 'https://dipusingh123456789.vercel.app/api';
-    */
 };
 
 // Export the data for use in other files
@@ -239,6 +232,8 @@ if (typeof module !== 'undefined' && module.exports) {
     window.getApiUrl = getApiUrl;
     window.sinhaLibraryData = sinhaLibraryData;
 }
-
-
-
+app.use(cors({
+  origin: ['https://dipusingh123456789.vercel.app', 'http://localhost:3000', 'http://localhost:5000'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'x-auth-token']
+}));

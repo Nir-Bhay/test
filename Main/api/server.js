@@ -14,7 +14,7 @@ const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://dipukumardevcod:4a
 
 // Middleware
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' ? ['https://sinha-library.vercel.app'] : '*', // Restrict in production
+  origin: ['https://dipusingh123456789.vercel.app', 'http://localhost:3000', 'http://localhost:5000'], // Allow your Vercel domain and local development
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'x-auth-token']
 }));
@@ -41,10 +41,25 @@ const auth = async (req, res, next) => {
   }
 };
 
-// MongoDB Connection
-mongoose.connect(MONGODB_URI)
-  .then(() => console.log('MongoDB Connected'))
-  .catch(err => console.error('MongoDB Connection Error:', err));
+// MongoDB Connection with retry logic
+const connectWithRetry = () => {
+  console.log('Attempting to connect to MongoDB...');
+  mongoose.connect(MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
+  })
+  .then(() => {
+    console.log('MongoDB Connected Successfully');
+  })
+  .catch(err => {
+    console.error('MongoDB Connection Error:', err);
+    console.log('Retrying connection in 5 seconds...');
+    setTimeout(connectWithRetry, 5000);
+  });
+};
+
+connectWithRetry();
 
 // User Schema
 const UserSchema = new mongoose.Schema({
