@@ -283,149 +283,142 @@
     <!-- Bootstrap 5 JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../data.js"></script>
-    <script>
-        // Get API URL from data.js
-        // Define the API URL for the backend
-            const getApiUrl = () => {
-                return 'https://test-gcwv.onrender.com'; // Backend URL
-            };
-        const API_URL = getApiUrl();
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            const passwordInput = document.getElementById('password');
-            const confirmPasswordInput = document.getElementById('confirmPassword');
-            const passwordMatchText = document.getElementById('passwordMatch');
-            const strengthMeter = document.querySelector('.strength-meter-fill');
-            const signupForm = document.getElementById('signupForm');
-            
-            // Password visibility toggle
-            const toggleButtons = document.querySelectorAll('.password-toggle');
-            toggleButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const input = this.previousElementSibling;
-                    const icon = this.querySelector('i');
-                    
-                    if (input.type === 'password') {
-                        input.type = 'text';
-                        icon.classList.remove('fa-eye');
-                        icon.classList.add('fa-eye-slash');
-                    } else {
-                        input.type = 'password';
-                        icon.classList.remove('fa-eye-slash');
-                        icon.classList.add('fa-eye');
-                    }
-                });
+<script>
+    // Get API URL from data.js
+    const API_URL = getApiUrl();
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+        const passwordMatchText = document.getElementById('passwordMatch');
+        const strengthMeter = document.querySelector('.strength-meter-fill');
+        const signupForm = document.getElementById('signupForm');
+
+        // Password visibility toggle
+        const toggleButtons = document.querySelectorAll('.password-toggle');
+        toggleButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const input = this.previousElementSibling;
+                const icon = this.querySelector('i');
+
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                } else {
+                    input.type = 'password';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
             });
-            
-            // Password strength checker
-            if (passwordInput) {
-                passwordInput.addEventListener('input', function() {
-                    const password = this.value;
-                    let strength = 0;
-                    
-                    if (password.length >= 8) strength++;
-                    if (password.match(/[a-z]+/)) strength++;
-                    if (password.match(/[A-Z]+/)) strength++;
-                    if (password.match(/[0-9]+/)) strength++;
-                    if (password.match(/[^a-zA-Z0-9]+/)) strength++;
-                    
-                    strengthMeter.setAttribute('data-strength', Math.min(strength, 4));
-                });
-            }
-            
-            // Password match checker
-            if (confirmPasswordInput && passwordInput && passwordMatchText) {
-                confirmPasswordInput.addEventListener('input', function() {
-                    if (this.value === passwordInput.value) {
-                        passwordMatchText.textContent = 'Passwords match';
-                        passwordMatchText.className = 'form-text text-success';
-                    } else {
-                        passwordMatchText.textContent = 'Passwords do not match';
-                        passwordMatchText.className = 'form-text text-danger';
-                    }
-                });
-            }
-            
-            // Form submission
-            if (signupForm) {
-                signupForm.addEventListener('submit', async function(e) {
-                    e.preventDefault();
-                    
-                    // Validate form
-                    if (passwordInput.value !== confirmPasswordInput.value) {
-                        alert('Passwords do not match');
-                        return;
-                    }
-                    
-                    // Get form values
-                    const firstName = document.getElementById('firstName').value;
-                    const lastName = document.getElementById('lastName').value;
-                    const mobileNumber = document.getElementById('mobileNumber').value;
-                    const email = document.getElementById('email').value;
-                    const address = document.getElementById('address').value;
-                    const password = passwordInput.value;
-                    
-                    try {
-                        // First try to save to MongoDB through API
-                        const response = await fetch(`${API_URL}/api/register`, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                firstName,
-                                lastName,
-                                email,
-                                mobileNumber,
-                                address,
-                                password
-                            })
-                        });
-                        
-                        // Check if response is ok
-                        if (!response.ok) {
-                            const errorText = await response.text();
-                            let errorMessage = 'Registration failed';
-                            
-                            try {
-                                // Try to parse as JSON
-                                const errorData = JSON.parse(errorText);
-                                errorMessage = errorData.message || errorMessage;
-                            } catch (parseError) {
-                                // If not valid JSON, use the text directly
-                                errorMessage = errorText || errorMessage;
-                            }
-                            
-                            throw new Error(errorMessage);
-                        }
-                        
-                        const data = await response.json();
-                        
-                        console.log('Registration successful (MongoDB):', data);
-                        
-                        // Store auth token and user data in localStorage
-                        localStorage.setItem('token', data.token);
-                        localStorage.setItem('userId', data.user.id);
-                        localStorage.setItem('userEmail', data.user.email);
-                        localStorage.setItem('userName', `${data.user.firstName} ${data.user.lastName}`);
-                        localStorage.setItem('isAdmin', data.user.isAdmin);
-                        
-                        // Show success modal
-                        const successModal = new bootstrap.Modal(document.getElementById('successModal'));
-                        successModal.show();
-                        
-                        // Redirect to dashboard after a short delay
-                        setTimeout(() => {
-                            window.location.href = '../dashboard/index.html';
-                        }, 2000);
-                        
-                    } catch (err) {
-                        console.error('Registration error:', err);
-                        alert('Registration error: ' + err.message);
-                    }
-                });
-            }
         });
-    </script>
+
+        // Password strength checker
+        if (passwordInput) {
+            passwordInput.addEventListener('input', function () {
+                const password = this.value;
+                let strength = 0;
+
+                if (password.length >= 8) strength++;
+                if (password.match(/[a-z]+/)) strength++;
+                if (password.match(/[A-Z]+/)) strength++;
+                if (password.match(/[0-9]+/)) strength++;
+                if (password.match(/[^a-zA-Z0-9]+/)) strength++;
+
+                strengthMeter.setAttribute('data-strength', Math.min(strength, 4));
+            });
+        }
+
+        // Password match checker
+        if (confirmPasswordInput && passwordInput && passwordMatchText) {
+            confirmPasswordInput.addEventListener('input', function () {
+                if (this.value === passwordInput.value) {
+                    passwordMatchText.textContent = 'Passwords match';
+                    passwordMatchText.className = 'form-text text-success';
+                } else {
+                    passwordMatchText.textContent = 'Passwords do not match';
+                    passwordMatchText.className = 'form-text text-danger';
+                }
+            });
+        }
+
+        // Form submission
+        if (signupForm) {
+            signupForm.addEventListener('submit', async function (e) {
+                e.preventDefault();
+
+                // Validate form
+                if (passwordInput.value !== confirmPasswordInput.value) {
+                    alert('Passwords do not match');
+                    return;
+                }
+
+                // Get form values
+                const firstName = document.getElementById('firstName').value;
+                const lastName = document.getElementById('lastName').value;
+                const mobileNumber = document.getElementById('mobileNumber').value;
+                const email = document.getElementById('email').value;
+                const address = document.getElementById('address').value;
+                const password = passwordInput.value;
+
+                try {
+                    // Send registration request to API
+                    const response = await fetch(`${API_URL}/api/register`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            firstName,
+                            lastName,
+                            email,
+                            mobileNumber,
+                            address,
+                            password
+                        })
+                    });
+
+                    // Check if response is ok
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        let errorMessage = 'Registration failed';
+
+                        try {
+                            const errorData = JSON.parse(errorText);
+                            errorMessage = errorData.message || errorMessage;
+                        } catch (parseError) {
+                            errorMessage = errorText || errorMessage;
+                        }
+
+                        throw new Error(errorMessage);
+                    }
+
+                    const data = await response.json();
+
+                    console.log('Registration successful:', data);
+
+                    // Store auth token and user data in localStorage
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('userId', data.user.id);
+                    localStorage.setItem('userEmail', data.user.email);
+                    localStorage.setItem('userName', `${data.user.firstName} ${data.user.lastName}`);
+                    localStorage.setItem('isAdmin', data.user.isAdmin);
+
+                    // Show success message
+                    alert('Registration successful! Redirecting to dashboard...');
+
+                    // Redirect to dashboard after a short delay
+                    setTimeout(() => {
+                        window.location.href = '../dashboard/index.html';
+                    }, 2000);
+
+                } catch (err) {
+                    console.error('Registration error:', err);
+                    alert('Registration error: ' + err.message);
+                }
+            });
+        }
+    });
+</script>
 </body>
 </html>

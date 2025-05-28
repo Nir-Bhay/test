@@ -7,14 +7,16 @@ const jwt = require('jsonwebtoken');
 // Add dotenv for environment variables
 require('dotenv').config();
 
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET || 'sinha-library-secret-key'; // Fallback for development
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://dipukumardevcod:4a2jraytNqTAfmII@sinhalibrary.6b0kuxs.mongodb.net/?retryWrites=true&w=majority&appName=SinhaLibrary';
 
+
 // Middleware
 app.use(cors({
-  origin: ['https://test-knaf-nirbhay-987s-projects.vercel.app'], // Frontend URL
+  origin: ['https://test-knaf-nirbhay-987s-projects.vercel.app', 'http://localhost:3000'], // Frontend URLs
   credentials: true, // Allow credentials (cookies, authorization headers, etc.)
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'x-auth-token']
