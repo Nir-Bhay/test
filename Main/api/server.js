@@ -14,7 +14,8 @@ const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://dipukumardevcod:4a
 
 // Middleware
 app.use(cors({
-  origin: ['http://localhost:3000', 'https://sinha-librarydhanbad-hijl.onrender.com', 'https://dipusingh123456789.vercel.app'],
+  origin: ['https://test-knaf-nirbhay-987s-projects.vercel.app'], // Frontend URL
+  credentials: true, // Allow credentials (cookies, authorization headers, etc.)
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'x-auth-token']
 }));

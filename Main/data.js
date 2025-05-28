@@ -219,9 +219,9 @@ const sinhaLibraryData = {
 };
 
 // API URL Configuration
+// Define the API URL for the backend
 const getApiUrl = () => {
-    // Using the API server running on port 5000
-    return 'http://localhost:5000';
+    return 'https://test-gcwv.onrender.com'; // Backend URL
 };
 
 // Export the data for use in other files
