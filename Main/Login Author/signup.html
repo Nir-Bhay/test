@@ -13,6 +13,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
+       /* Root Variables */
         :root {
             --primary-color: #8B4513;
             --primary-dark: #6B3E0B;
@@ -22,118 +23,158 @@
             --success-color: #28a745;
             --danger-color: #dc3545;
             --warning-color: #ffc107;
+            --gradient-bg: linear-gradient(135deg, #8B4513, #6B3E0B);
         }
-        
+
+        /* Body Styling */
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: var(--light-gray);
+            background: var(--gradient-bg);
+            color: var(--text-color);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
+            overflow-x: hidden;
         }
-        
+
+        /* Signup Card */
         .signup-card {
             max-width: 500px;
             width: 100%;
             background: white;
             border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
             overflow: hidden;
+            animation: fadeIn 1s ease-in-out;
         }
-        
+
+        /* Header */
         .signup-header {
             background: var(--primary-color);
             color: white;
             padding: 20px;
             text-align: center;
+            border-bottom: 5px solid var(--primary-dark);
         }
-        
+
+        /* Body */
         .signup-body {
             padding: 20px;
         }
-        
+
+        /* Form Labels */
         .form-label {
             font-weight: 500;
             margin-bottom: 0.25rem;
         }
-        
+
         .required {
             color: var(--danger-color);
         }
-        
+
+        /* Buttons */
         .btn-primary {
             background-color: var(--primary-color);
             border-color: var(--primary-color);
+            transition: all 0.3s ease;
         }
-        
+
         .btn-primary:hover {
             background-color: var(--primary-dark);
             border-color: var(--primary-dark);
+            transform: scale(1.05);
         }
-        
+
+        /* Back Link */
         .back-link {
             color: var(--primary-color);
             text-decoration: none;
             display: inline-block;
             margin-bottom: 15px;
+            transition: color 0.3s ease;
         }
-        
+
         .back-link:hover {
+            color: var(--primary-dark);
             text-decoration: underline;
         }
-        
+
+        /* Strength Meter */
         .strength-meter {
             height: 5px;
             background-color: #e9ecef;
             border-radius: 5px;
             margin-bottom: 0.5rem;
         }
-        
+
         .strength-meter-fill {
             height: 100%;
             border-radius: 5px;
             transition: all 0.3s ease;
         }
-        
+
         .strength-meter-fill[data-strength="0"] {
             width: 20%;
             background-color: var(--danger-color);
         }
-        
+
         .strength-meter-fill[data-strength="1"] {
             width: 40%;
             background-color: var(--danger-color);
         }
-        
+
         .strength-meter-fill[data-strength="2"] {
             width: 60%;
             background-color: var(--warning-color);
         }
-        
+
         .strength-meter-fill[data-strength="3"] {
             width: 80%;
             background-color: var(--success-color);
         }
-        
+
         .strength-meter-fill[data-strength="4"] {
             width: 100%;
             background-color: var(--success-color);
         }
-        
-        .form-control {
-            margin-bottom: 10px;
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        
-        .input-group {
-            margin-bottom: 10px;
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
         }
-        
-        .form-text {
-            margin-top: -5px;
-            margin-bottom: 10px;
-            font-size: 0.8rem;
+
+        .btn-primary:focus {
+            animation: pulse 0.5s infinite;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .signup-card {
+                max-width: 100%;
+                padding: 10px;
+            }
+
+            .signup-header {
+                font-size: 1.5rem;
+            }
         }
     </style>
 </head>
