@@ -191,353 +191,120 @@
     <!-- Data JS with API URL function -->
     <script src="../data.js"></script>
     <script>
-        // API URL - dynamically set based on environment
+        // Get API URL from data.js
         const API_URL = getApiUrl();
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Toggle password visibility
+            document.querySelectorAll('.password-toggle').forEach(button => {
+                button.addEventListener('click', function() {
+                    const input = this.previousElementSibling;
+                    const icon = this.querySelector('i');
+                    
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        icon.classList.remove('fa-eye');
+                        icon.classList.add('fa-eye-slash');
+                    } else {
+                        input.type = 'password';
+                        icon.classList.remove('fa-eye-slash');
+                        icon.classList.add('fa-eye');
+                    }
+                });
+            });
 
-        function togglePassword(inputId, toggleElement) {
-            const passwordInput = document.getElementById(inputId);
-            const icon = toggleElement.querySelector('i');
-
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
-            } else {
-                passwordInput.type = 'password';
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
+            // Add event listener to login form
+            const loginForm = document.getElementById('loginForm');
+            if (loginForm) {
+                loginForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    loginUser();
+                });
             }
-        }
 
-        // Mock authentication system to bypass server errors
-        const mockAuthSystem = {
-            // Mock user database
-            users: [
-                {
-                    id: '1',
-                    firstName: 'Admin',
-                    lastName: 'User',
-                    email: 'admin@sinhalibrary.com',
-                    password: 'admin123',
-                    isAdmin: true
-                },
-                {
-                    id: '2',
-                    firstName: 'Test',
-                    lastName: 'User',
-                    email: 'user@sinhalibrary.com',
-                    password: 'user123',
-                    isAdmin: false
-                }
-            ],
-
-            // Find user by email
-            findUserByEmail: function (email) {
-                return this.users.find(user => user.email.toLowerCase() === email.toLowerCase());
-            },
-
-            // Add new user
-            addUser: function (userData) {
-                const newUser = {
-                    id: (this.users.length + 1).toString(),
-                    firstName: userData.firstName,
-                    lastName: userData.lastName,
-                    email: userData.email,
-                    password: userData.password,
-                    mobileNumber: userData.mobileNumber || '',
-                    address: userData.address || '',
-                    isAdmin: false
-                };
-
-                this.users.push(newUser);
-                return newUser;
-            },
-
-            // Login user
-            login: function (email, password) {
-                const user = this.findUserByEmail(email);
-                if (!user || user.password !== password) {
-                    throw new Error('Invalid email or password');
-                }
-
-                return {
-                    token: 'mock-token-' + Date.now(),
-                    user: { ...user, password: undefined } // Remove password from response
-                };
-            },
-
-            // Register user
-            register: function (userData) {
-                // Check if email already exists
-                const existingUser = this.findUserByEmail(userData.email);
-                if (existingUser) {
-                    throw new Error('Email already registered');
-                }
-
-                const newUser = this.addUser(userData);
-
-                return {
-                    token: 'mock-token-' + Date.now(),
-                    user: { ...newUser, password: undefined } // Remove password from response
-                };
+            // Add event listener to signup form in the login page
+            const signupForm = document.getElementById('signupForm');
+            if (signupForm) {
+                signupForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    window.location.href = 'signup.html';
+                });
             }
-        };
 
-        // Modified login function to use mock auth system
+            // Social login handlers
+            document.querySelectorAll('.social-login button').forEach(button => {
+                button.addEventListener('click', function() {
+                    const provider = this.textContent.trim().toLowerCase();
+                    alert(`${provider} login is not implemented yet.`);
+                });
+            });
+        });
+
+        // Login function to authenticate with MongoDB through API
         async function loginUser() {
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
-
+            
             // Show loading state
             const submitButton = document.querySelector('#loginForm button[type="submit"]');
             const originalButtonText = submitButton.innerHTML;
             submitButton.disabled = true;
             submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
-
+            
             try {
-                let data;
-
-                // Try server login first
-                try {
-                    console.log('Attempting server login to:', `${API_URL}/api/login`);
-
-                    const response = await fetch(`${API_URL}/api/login`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ email, password })
-                    });
-
-                    if (response.ok) {
-                        data = await response.json();
-                        console.log('Server login successful');
-                    } else {
-                        throw new Error('Server login failed');
+                // Send login request to API server
+                const response = await fetch(`${API_URL}/api/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                // Check if response is ok
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    let errorMessage = 'Login failed';
+                    
+                    try {
+                        // Try to parse as JSON
+                        const errorData = JSON.parse(errorText);
+                        errorMessage = errorData.message || errorMessage;
+                    } catch (parseError) {
+                        // If not valid JSON, use the text directly
+                        errorMessage = errorText || errorMessage;
                     }
-                } catch (serverError) {
-                    console.warn('Server login failed, falling back to mock authentication:', serverError);
-
-                    // Fallback to mock authentication
-                    data = mockAuthSystem.login(email, password);
-                    console.log('Mock login successful');
+                    
+                    throw new Error(errorMessage);
                 }
-
+                
+                const data = await response.json();
+                
                 console.log('Login successful:', data);
-
+                
                 // Store auth token and user data in localStorage
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('userId', data.user.id);
                 localStorage.setItem('userEmail', data.user.email);
                 localStorage.setItem('userName', `${data.user.firstName} ${data.user.lastName}`);
-                localStorage.setItem('isAdmin', data.user.isAdmin ? 'true' : 'false');
-
+                localStorage.setItem('isAdmin', data.user.isAdmin);
+                
                 // Redirect to appropriate dashboard based on user role
                 if (data.user.isAdmin) {
                     window.location.href = '../dashboard/admin.html';
                 } else {
                     window.location.href = '../dashboard/index.html';
                 }
-            } catch (err) {
-                console.error('Login error:', err);
-                alert(err.message || 'Login failed. Please try again.');
+                
+            } catch (error) {
+                console.error('Login error:', error);
+                alert('Login error: ' + error.message);
             } finally {
                 // Reset button state
                 submitButton.disabled = false;
                 submitButton.innerHTML = originalButtonText;
             }
         }
-
-        // Form submission handling for signup with mock auth fallback
-        document.getElementById('signupForm').addEventListener('submit', async function (e) {
-            e.preventDefault();
-
-            // Validate passwords match
-            const password = document.getElementById('signupPassword').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-
-            if (password !== confirmPassword) {
-                alert('Passwords do not match');
-                return;
-            }
-
-            const email = document.getElementById('signupEmail').value;
-            const firstName = document.getElementById('firstName').value;
-            const lastName = document.getElementById('lastName').value;
-            const phone = document.getElementById('phone').value;
-
-            // Show loading state
-            const submitButton = this.querySelector('button[type="submit"]');
-            const originalButtonText = submitButton.innerHTML;
-            submitButton.disabled = true;
-            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-
-            try {
-                // Create user data object
-                const userData = {
-                    firstName,
-                    lastName,
-                    email,
-                    mobileNumber: phone,
-                    address: 'Default Address',
-                    password
-                };
-
-                let data;
-                let savedToDatabase = false;
-
-                // Try server registration first
-                try {
-                    console.log('Attempting server registration to:', `${API_URL}/api/register`);
-                    const response = await fetch(`${API_URL}/api/register`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(userData)
-                    });
-
-                    if (response.ok) {
-                        data = await response.json();
-                        console.log('Server registration successful');
-                        savedToDatabase = true;
-                    } else {
-                        throw new Error('Server registration failed');
-                    }
-                } catch (serverError) {
-                    console.warn('Server registration failed, falling back to mock authentication:', serverError);
-
-                    // Add the registration to the pending queue to try again later
-                    pendingRegistrations.add(userData);
-                    console.log('Added registration to pending queue for later processing');
-
-                    // Fallback to mock authentication
-                    data = mockAuthSystem.register(userData);
-                    console.log('Mock registration successful');
-                }
-
-                console.log('Registration successful:', data);
-
-                // Store auth token and user data in localStorage
-                localStorage.setItem('token', data.token);
-                localStorage.setItem('userId', data.user.id);
-                localStorage.setItem('userEmail', data.user.email);
-                localStorage.setItem('userName', `${data.user.firstName} ${data.user.lastName}`);
-                localStorage.setItem('isAdmin', data.user.isAdmin ? 'true' : 'false');
-
-                // Show success message with database status
-                if (savedToDatabase) {
-                    alert('Registration successful! Your account has been saved to the database. You will now be redirected to the dashboard.');
-                } else {
-                    alert('Registration successful! However, your account could not be saved to the database due to server issues. We will automatically try to save your account when the server becomes available. You will now be redirected to the dashboard.');
-                }
-
-                // Redirect to dashboard
-                window.location.href = '../dashboard/index.html';
-            } catch (err) {
-                console.error('Registration error:', err);
-                alert(err.message || 'Registration error. Please try again later.');
-            } finally {
-                // Reset button state
-                submitButton.disabled = false;
-                submitButton.innerHTML = originalButtonText;
-            }
-        });
-
-        // Queue for storing registration data that failed to save to the server
-        const pendingRegistrations = {
-            // Get the queue from localStorage or initialize empty array
-            get: function () {
-                const queue = localStorage.getItem('pendingRegistrations');
-                return queue ? JSON.parse(queue) : [];
-            },
-
-            // Add a registration to the queue
-            add: function (userData) {
-                const queue = this.get();
-                queue.push({
-                    userData: userData,
-                    timestamp: Date.now()
-                });
-                localStorage.setItem('pendingRegistrations', JSON.stringify(queue));
-            },
-
-            // Remove a registration from the queue
-            remove: function (index) {
-                const queue = this.get();
-                queue.splice(index, 1);
-                localStorage.setItem('pendingRegistrations', JSON.stringify(queue));
-            },
-
-            // Process the queue and try to send pending registrations to the server
-            process: async function () {
-                const queue = this.get();
-                if (queue.length === 0) return;
-
-                console.log(`Processing ${queue.length} pending registrations...`);
-
-                for (let i = 0; i < queue.length; i++) {
-                    try {
-                        const item = queue[i];
-
-                        // Skip items that are too old (more than 7 days)
-                        if (Date.now() - item.timestamp > 7 * 24 * 60 * 60 * 1000) {
-                            this.remove(i);
-                            i--;
-                            continue;
-                        }
-
-                        console.log(`Attempting to send registration to server: ${item.userData.email}`);
-
-                        const response = await fetch(`${API_URL}/api/register`, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify(item.userData)
-                        });
-
-                        if (response.ok) {
-                            console.log(`Successfully saved registration to database: ${item.userData.email}`);
-                            this.remove(i);
-                            i--;
-                        } else {
-                            console.log(`Failed to save registration to database: ${item.userData.email}`);
-                        }
-                    } catch (error) {
-                        console.error('Error processing pending registration:', error);
-                    }
-                }
-            }
-        };
-
-        // Process pending registrations on page load and periodically
-        document.addEventListener('DOMContentLoaded', function () {
-            // Try to process pending registrations on page load
-            pendingRegistrations.process();
-
-            // Try to process pending registrations every 5 minutes
-            setInterval(pendingRegistrations.process.bind(pendingRegistrations), 5 * 60 * 1000);
-        });
-
-        // Add event listener to login form
-        document.addEventListener('DOMContentLoaded', function () {
-            const loginForm = document.getElementById('loginForm');
-            if (loginForm) {
-                loginForm.addEventListener('submit', function (e) {
-                    e.preventDefault();
-                    loginUser();
-                });
-            }
-        });
-
-        // Social login handlers
-        document.querySelectorAll('.social-login button').forEach(button => {
-            button.addEventListener('click', async function () {
-                const provider = this.textContent.trim().toLowerCase();
-                alert(`${provider} login is not implemented yet.`);
-            });
-        });
     </script>
 </body>
 

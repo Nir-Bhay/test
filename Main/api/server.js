@@ -14,7 +14,7 @@ const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://dipukumardevcod:4a
 
 // Middleware
 app.use(cors({
-  origin: ['https://dipusingh123456789.vercel.app', 'http://localhost:3000', 'http://localhost:5000'], // Allow your Vercel domain and local development
+  origin: '*', // Allow all origins for development
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'x-auth-token']
 }));
@@ -70,7 +70,7 @@ const UserSchema = new mongoose.Schema({
   address: { type: String, required: true },
   password: { type: String, required: true },
   isAdmin: { type: Boolean, default: false },
-  membershipEndDate: { type: Date, default: () => new Date(+new Date() + 30*24*60*60*1000) }, // Default 30 days from now
+  membershipEndDate: { type: Date, default: Date.now }, // Default to current date (0 days)
   createdAt: { type: Date, default: Date.now },
   paymentHistory: [{ type: Object }]
 });
@@ -239,25 +239,20 @@ app.get('/api/user', async (req, res) => {
 });
 
 // Admin route to get all users
-app.get('/api/admin/users', async (req, res) => {
+app.get('/api/admin/users', auth, async (req, res) => {
   try {
-    const token = req.header('x-auth-token');
-    if (!token) {
-      return res.status(401).json({ message: 'No token, authorization denied' });
+    // Verify that the requesting user is an admin
+    const user = await User.findById(req.user.userId);
+    if (!user || !user.isAdmin) {
+      return res.status(403).json({ message: 'Access denied. Admin only.' });
     }
 
-    const decoded = jwt.verify(token, JWT_SECRET);
-    const admin = await User.findById(decoded.userId);
-    
-    if (!admin || !admin.isAdmin) {
-      return res.status(403).json({ message: 'Not authorized as admin' });
-    }
-
-    const users = await User.find().select('-password');
+    // Fetch all users except the current admin
+    const users = await User.find({ _id: { $ne: req.user.userId } }).select('-password');
     res.json(users);
   } catch (error) {
-    console.error('Admin users fetch error:', error);
-    res.status(500).json({ message: 'Server error' });
+    console.error('Error fetching users:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
 
@@ -303,18 +298,12 @@ app.post('/api/admin/update-user-days', async (req, res) => {
 });
 
 // Update user payment (admin only)
-app.post('/api/admin/update-user-payment', async (req, res) => {
+app.post('/api/admin/update-user-payment', auth, async (req, res) => {
   try {
-    const token = req.header('x-auth-token');
-    if (!token) {
-      return res.status(401).json({ message: 'No token, authorization denied' });
-    }
-
-    const decoded = jwt.verify(token, JWT_SECRET);
-    const admin = await User.findById(decoded.userId);
-    
+    // Check if user is admin
+    const admin = await User.findById(req.user.userId);
     if (!admin || !admin.isAdmin) {
-      return res.status(403).json({ message: 'Not authorized as admin' });
+      return res.status(403).json({ message: 'Access denied. Admin only.' });
     }
 
     const { userId, amount, days, note } = req.body;
@@ -330,8 +319,17 @@ app.post('/api/admin/update-user-payment', async (req, res) => {
 
     // Calculate new membership end date
     const currentDate = new Date();
-    const newEndDate = new Date(currentDate);
-    newEndDate.setDate(currentDate.getDate() + parseInt(days));
+    let newEndDate;
+    
+    // If membership has expired, start from today
+    if (user.membershipEndDate < currentDate) {
+      newEndDate = new Date(currentDate);
+      newEndDate.setDate(currentDate.getDate() + parseInt(days));
+    } else {
+      // If membership is still active, add days to current end date
+      newEndDate = new Date(user.membershipEndDate);
+      newEndDate.setDate(newEndDate.getDate() + parseInt(days));
+    }
 
     user.membershipEndDate = newEndDate;
     user.isMember = true;
@@ -339,11 +337,11 @@ app.post('/api/admin/update-user-payment', async (req, res) => {
     // Create payment record
     const payment = {
       amount: parseInt(amount),
-      date: new Date(),
+      date: req.body.date ? new Date(req.body.date) : new Date(),
       note: note || 'Admin updated payment',
-      adminId: decoded.userId,
+      adminId: admin._id,
       adminName: `${admin.firstName} ${admin.lastName}`,
-      paymentType: 'Membership',
+      paymentType: req.body.paymentType || 'Membership', // Get payment type from request or default to 'Membership'
       daysAdded: parseInt(days),
       userId: user._id,
       userName: `${user.firstName} ${user.lastName}`
@@ -356,6 +354,9 @@ app.post('/api/admin/update-user-payment', async (req, res) => {
     user.paymentHistory.push(payment);
 
     await user.save();
+    
+    console.log('Payment history updated for user:', user.email);
+    console.log('Payment history now contains:', user.paymentHistory.length, 'entries');
 
     res.json({ success: true, message: 'User payment updated successfully' });
   } catch (error) {
@@ -569,7 +570,7 @@ app.get('/api/admin/payment-history', async (req, res) => {
 app.get('/api/admin/expenses', auth, async (req, res) => {
   try {
     // Check if user is admin
-    const user = await User.findById(req.user.id);
+    const user = await User.findById(req.user.userId);
     if (!user || !user.isAdmin) {
       return res.status(403).json({ success: false, message: 'Access denied. Admin only.' });
     }
@@ -665,7 +666,7 @@ app.post('/api/admin/expenses', auth, async (req, res) => {
 app.delete('/api/admin/expenses/:id', auth, async (req, res) => {
   try {
     // Check if user is admin
-    const user = await User.findById(req.user.id);
+    const user = await User.findById(req.user.userId);
     if (!user || !user.isAdmin) {
       return res.status(403).json({ success: false, message: 'Access denied. Admin only.' });
     }
@@ -688,7 +689,7 @@ app.delete('/api/admin/expenses/:id', auth, async (req, res) => {
 app.put('/api/admin/expenses/:id', auth, async (req, res) => {
   try {
     // Check if user is admin
-    const user = await User.findById(req.user.id);
+    const user = await User.findById(req.user.userId);
     if (!user || !user.isAdmin) {
       return res.status(403).json({ success: false, message: 'Access denied. Admin only.' });
     }
@@ -725,22 +726,35 @@ app.put('/api/admin/expenses/:id', auth, async (req, res) => {
   }
 });
 
-// Start server - Only run this in non-Vercel environments
-if (process.env.NODE_ENV !== 'production') {
-  const server = app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-    console.log(`API endpoints available at http://localhost:${PORT}/api`);
-    
-    // Log all available routes for debugging
-    console.log('Available API routes:');
-    app._router.stack
-      .filter(r => r.route)
-      .map(r => {
-        const methods = Object.keys(r.route.methods).map(m => m.toUpperCase()).join(',');
-        console.log(`${methods} ${r.route.path}`);
-      });
-  });
-}
+// Get current user data including payment history
+app.get('/api/user/profile', auth, async (req, res) => {
+  try {
+    // Use userId from the decoded token
+    const user = await User.findById(req.user.userId).select('-password');
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.json(user);
+  } catch (error) {
+    console.error('Error fetching user profile:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
 
-// Export for Vercel serverless functions
+// Start server
+const server = app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+  console.log(`API endpoints available at http://localhost:${PORT}/api`);
+  
+  // Log all available routes for debugging
+  console.log('Available API routes:');
+  app._router.stack
+    .filter(r => r.route)
+    .map(r => {
+      const methods = Object.keys(r.route.methods).map(m => m.toUpperCase()).join(',');
+      console.log(`${methods} ${r.route.path}`);
+    });
+});
+
+// Export app for testing purposes
 module.exports = app;

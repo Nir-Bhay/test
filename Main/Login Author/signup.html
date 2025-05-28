@@ -270,46 +270,35 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title" id="successModalLabel">Registration Successful!</h5>
+                    <h5 class="modal-title" id="successModalLabel">Registration Successful</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body text-center">
-                    <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
-                    <h4 class="mt-3">Your account has been created</h4>
-                    <p>You will be redirected to the dashboard in a few seconds...</p>
+                <div class="modal-body">
+                    <p>Your account has been created successfully! You will now be redirected to the dashboard.</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Bootstrap JS Bundle with Popper -->
+    <!-- Bootstrap 5 JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Password Strength Meter Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/zxcvbn/4.4.2/zxcvbn.js"></script>
-    <!-- Anti-Inspect Script -->
-    <script src="../anti-inspect.js"></script>
-    <!-- Data JS with API URL function -->
     <script src="../data.js"></script>
     <script>
-        // API URL - dynamically set based on environment
+        // Get API URL from data.js
         const API_URL = getApiUrl();
         
         document.addEventListener('DOMContentLoaded', function() {
-            // Get DOM elements
             const passwordInput = document.getElementById('password');
             const confirmPasswordInput = document.getElementById('confirmPassword');
-            const strengthMeter = document.querySelector('.strength-meter-fill');
-            const strengthText = document.getElementById('strengthText');
             const passwordMatchText = document.getElementById('passwordMatch');
+            const strengthMeter = document.querySelector('.strength-meter-fill');
             const signupForm = document.getElementById('signupForm');
             
-            // Get toggle password buttons
-            const passwordToggleButtons = document.querySelectorAll('.password-toggle');
-            
-            // Add event listeners to toggle password buttons
-            passwordToggleButtons.forEach(button => {
+            // Password visibility toggle
+            const toggleButtons = document.querySelectorAll('.password-toggle');
+            toggleButtons.forEach(button => {
                 button.addEventListener('click', function() {
-                    const input = this.parentElement.querySelector('input');
+                    const input = this.previousElementSibling;
                     const icon = this.querySelector('i');
                     
                     if (input.type === 'password') {
@@ -325,50 +314,25 @@
             });
             
             // Password strength checker
-            if (passwordInput && strengthMeter && strengthText) {
+            if (passwordInput) {
                 passwordInput.addEventListener('input', function() {
-                    const val = this.value;
-                    if (val.length === 0) {
-                        strengthMeter.setAttribute('data-strength', '0');
-                        strengthText.textContent = 'Too weak';
-                        return;
-                    }
+                    const password = this.value;
+                    let strength = 0;
                     
-                    try {
-                        const result = zxcvbn(val);
-                        const strength = result.score; // 0 to 4
-                        
-                        // Update the strength meter
-                        strengthMeter.setAttribute('data-strength', strength);
-                        
-                        // Update the text
-                        let text = '';
-                        switch(strength) {
-                            case 0: text = 'Too weak'; break;
-                            case 1: text = 'Weak'; break;
-                            case 2: text = 'Fair'; break;
-                            case 3: text = 'Good'; break;
-                            case 4: text = 'Strong'; break;
-                        }
-                        strengthText.textContent = text;
-                    } catch (error) {
-                        console.error('Error calculating password strength:', error);
-                    }
+                    if (password.length >= 8) strength++;
+                    if (password.match(/[a-z]+/)) strength++;
+                    if (password.match(/[A-Z]+/)) strength++;
+                    if (password.match(/[0-9]+/)) strength++;
+                    if (password.match(/[^a-zA-Z0-9]+/)) strength++;
+                    
+                    strengthMeter.setAttribute('data-strength', Math.min(strength, 4));
                 });
-                
-                // Trigger initial password strength check after a short delay
-                setTimeout(() => {
-                    if (passwordInput.value) {
-                        const event = new Event('input');
-                        passwordInput.dispatchEvent(event);
-                    }
-                }, 100);
             }
             
-            // Check if passwords match
-            if (confirmPasswordInput && passwordMatchText && passwordInput) {
+            // Password match checker
+            if (confirmPasswordInput && passwordInput && passwordMatchText) {
                 confirmPasswordInput.addEventListener('input', function() {
-                    if (passwordInput.value === confirmPasswordInput.value) {
+                    if (this.value === passwordInput.value) {
                         passwordMatchText.textContent = 'Passwords match';
                         passwordMatchText.className = 'form-text text-success';
                     } else {
@@ -398,6 +362,7 @@
                     const password = passwordInput.value;
                     
                     try {
+                        // First try to save to MongoDB through API
                         const response = await fetch(`${API_URL}/api/register`, {
                             method: 'POST',
                             headers: {
@@ -413,7 +378,7 @@
                             })
                         });
                         
-                        // Check if response is ok before trying to parse JSON
+                        // Check if response is ok
                         if (!response.ok) {
                             const errorText = await response.text();
                             let errorMessage = 'Registration failed';
@@ -432,22 +397,24 @@
                         
                         const data = await response.json();
                         
-                        console.log('Registration successful:', data);
+                        console.log('Registration successful (MongoDB):', data);
                         
                         // Store auth token and user data in localStorage
                         localStorage.setItem('token', data.token);
                         localStorage.setItem('userId', data.user.id);
                         localStorage.setItem('userEmail', data.user.email);
                         localStorage.setItem('userName', `${data.user.firstName} ${data.user.lastName}`);
+                        localStorage.setItem('isAdmin', data.user.isAdmin);
                         
                         // Show success modal
                         const successModal = new bootstrap.Modal(document.getElementById('successModal'));
                         successModal.show();
                         
-                        // Redirect to dashboard after 3 seconds
+                        // Redirect to dashboard after a short delay
                         setTimeout(() => {
                             window.location.href = '../dashboard/index.html';
-                        }, 3000);
+                        }, 2000);
+                        
                     } catch (err) {
                         console.error('Registration error:', err);
                         alert('Registration error: ' + err.message);
